@@ -1,0 +1,144 @@
+{
+    "name": "vscode-coverage-highlighter",
+    "displayName": "Code Coverage Highlighter",
+    "description": "Show your code quality",
+    "version": "1.0.0",
+    "icon": "images/icon.png",
+    "publisher": "brainfit",
+    "author": {
+        "name": "Vladimir K Urushev"
+    },
+    "license": "MIT",
+    "engines": {
+        "vscode": "^1.24.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/pilat/vscode-coverage-highlighter.git"
+    },
+    "categories": [
+        "Themes",
+        "Linters",
+        "Other"
+    ],
+    "keywords": [
+        "coverage",
+        "highlight",
+        "python",
+        "typescript",
+        "javascript"
+    ],
+    "badges": [
+        {
+            "url": "https://vsmarketplacebadge.apphb.com/version/brainfit.split-lines.svg",
+            "href": "https://marketplace.visualstudio.com/items?itemName=brainfit.split-lines",
+            "description": "Visual Studio Marketplace"
+        },
+        {
+            "url": "https://travis-ci.org/pilat/split-lines.svg?branch=master",
+            "href": "https://travis-ci.org/pilat/split-lines",
+            "description": "Travis-CI"
+        },
+        {
+            "url": "https://codecov.io/gh/pilat/split-lines/branch/master/graph/badge.svg",
+            "href": "https://codecov.io/gh/pilat/split-lines",
+            "description": "codecov"
+        }
+    ],
+    "homepage": "https://github.com/pilat/split-lines/blob/master/README.md",
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/src/extension.js",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Code Coverage Highlighter",
+            "properties": {
+                "vscode-coverage-highlighter.files": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [
+                        "coverage/coverage-final.json",
+                        "coverage/lcov*.info",
+                        "cov*.xml"
+                    ],
+                    "description": "Coverage files search patterns",
+                    "scope": "resource"
+                },
+                "vscode-coverage-highlighter.defaultState": {
+                    "type": "string",
+                    "enum": [
+                        "enable",
+                        "disable"
+                    ],
+                    "default": "enable",
+                    "description": "Default coverage display state",
+                    "scope": "resource"
+                },
+                "vscode-coverage-highlighter.wholeLine": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Show coverage line wide or not",
+                    "scope": "resource"
+                },
+                "vscode-coverage-highlighter.colors": {
+                    "type": "object",
+                    "default": {
+                        "red": "rgba(255, 20, 20, 0.4)",
+                        "green": "rgba(20, 250, 20, 0.1)"
+                    },
+                    "description": "Lines decoration background colors. Use rgba/hex notation or pass empty string to disable it",
+                    "scope": "resource"
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "vscode-coverage-highlighter.toggle",
+                "title": "Toggle coverage display",
+                "category": "Code Coverage"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "watch": "tsc -watch -p ./",
+        "test": "node ./node_modules/vscode/bin/test",
+        "lint": "tslint './src/**/*.ts' './test/*.ts'",
+        "pretty": "tslint --fix './src/**/*.ts' './test/*.ts'"
+    },
+    "devDependencies": {
+        "@types/crypto-js": "^3.1.43",
+        "@types/debounce": "^1.2.0",
+        "@types/glob": "^5.0.30",
+        "@types/lodash": "^4.14.120",
+        "@types/mocha": "^5.2.5",
+        "@types/node": "^10.12.18",
+        "@types/simple-mock": "^0.8.1",
+        "decache": "^4.1.0",
+        "glob": "^7.1.1",
+        "istanbul": "^0.4.5",
+        "mocha": "^5.2.0",
+        "remap-istanbul": "^0.13.0",
+        "simple-mock": "^0.8.0",
+        "tslint": "^5.12.1",
+        "tslint-microsoft-contrib": "^6.0.0",
+        "typescript": "^3.3.1",
+        "typescript-tslint-plugin": "^0.3.1",
+        "vscode": "^1.1.16"
+    },
+    "dependencies": {
+        "@types/xml2js": "^0.4.3",
+        "cobertura-parse": "vokal/cobertura-parse#53109a677c995f5d2e90acd0fcd0b0788a6ec061",
+        "debounce": "^1.2.0",
+        "events": "^3.0.0",
+        "lcov-parse": "^1.0.0",
+        "lodash": "^4.17.11",
+        "vscode-extension-telemetry": "^0.1.1"
+    }
+}

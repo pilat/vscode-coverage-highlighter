@@ -1,0 +1,34 @@
+{
+  "compilerOptions":{
+    "module": "commonjs",
+    "target": "es6",
+    "outDir": "out",
+    "esModuleInterop": true,
+    "lib":[
+      "es6"
+    ],
+    "sourceMap": true,
+    "rootDir": ".",
+
+    // "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "plugins": [
+        { "name": "typescript-tslint-plugin" }
+    ]
+  },
+  "typeRoots": [
+    "./node_modules/@types"
+  ],
+  "types": [
+    "node",
+    "mocha"
+  ],
+  "exclude":[
+    "node_modules",
+    ".vscode-test",
+    "test/example",
+    "!node_modules/@types"
+  ]
+}
