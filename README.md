@@ -1,6 +1,6 @@
 <h1 style="border-bottom: none;" align="center">
   <br>
-    <img src="images/icon.png?raw=true" alt="logo" width="100">
+    <img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/icon.png?raw=true" alt="logo" width="100">
   <br>
   <br>
   Code Coverage Highlighter
@@ -9,7 +9,10 @@
 
 <p align="center">This is a <a href="https://code.visualstudio.com">Visual Studio Code</a> extension that allows you to see your code coverage.</p>
 
-> badjes here
+<!-- [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/brainfit.vscode-coverage-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=brainfit.vscode-coverage-highlighter)  -->
+[![Build Status](https://travis-ci.org/pilat/vscode-coverage-highlighter.svg?branch=master)](https://travis-ci.org/pilat/vscode-coverage-highlighter)
+[![codecov](https://codecov.io/gh/pilat/vscode-coverage-highlighter/branch/master/graph/badge.svg)](https://codecov.io/gh/pilat/vscode-coverage-highlighter)
+
 
 ---
 
@@ -37,28 +40,28 @@ Appearance depends on your code coverage format and configuration.
 
 Istambul file is providing fragment highlighting:
 
-<img src="images/code1.png" alt="Code fragments example" width="449">
+<img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/code1.png?raw=true" alt="Code fragments example" width="449">
 
 
 ### Code with highlighted lines
 
 The LCOV format was used there. Only uncovered lines were highlighted. This format doesn't support fragment highlighting:
 
-<img src="images/code2.png" alt="Code lines example" width="449">
+<img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/code2.png?raw=true" alt="Code lines example" width="449">
 
 
 ### Alternative appearance
 
 You can enable `wholeLine` mode. It will look especially good when your coverage format doesn't support fragments:
 
-<img src="images/code3.png" alt="Code lines with wholeLine option" width="449">
+<img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/code3.png?raw=true" alt="Code lines with wholeLine option" width="449">
 
 
 ## Status bar
 
 Whereas extension be able to find coverage file, it will add icon to your status bar. There will be average code coverage percentage. Click on eye-icon will switch coverage displaying.
 
-<img src="images/statusbar1.png" alt="Code lines with wholeLine option" width="354">
+<img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/statusbar1.png?raw=true" alt="Code lines with wholeLine option" width="354">
 
 
 <!-- : **LCOV** and **Cobertura**. For example, first of them usually uses with projects which are written in JavaScript or TypeScript. And the second with projects written in Python. -->
@@ -113,7 +116,7 @@ Open the `Command Palette` and type `Code Coverage`
 
 - **Toggle coverage display**: When text has been highlighted it will hide highlighting. By clicking on eye on your status bar you can do the same.
 
-
+<!-- 
 ## How to contribute
 
-Read the [contribution guidelines](https://github.com/xx/xxx/blob/master/CONTRIBUTING.md).
+Read the [contribution guidelines](https://github.com/pilat/vscode-coverage-highlighter/blob/master/CONTRIBUTING.md). -->

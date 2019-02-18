@@ -30,22 +30,22 @@
     ],
     "badges": [
         {
-            "url": "https://vsmarketplacebadge.apphb.com/version/brainfit.split-lines.svg",
-            "href": "https://marketplace.visualstudio.com/items?itemName=brainfit.split-lines",
+            "url": "https://vsmarketplacebadge.apphb.com/version/brainfit.vscode-coverage-highlighter.svg",
+            "href": "https://marketplace.visualstudio.com/items?itemName=brainfit.vscode-coverage-highlighter",
             "description": "Visual Studio Marketplace"
         },
         {
-            "url": "https://travis-ci.org/pilat/split-lines.svg?branch=master",
-            "href": "https://travis-ci.org/pilat/split-lines",
+            "url": "https://travis-ci.org/pilat/vscode-coverage-highlighter.svg?branch=master",
+            "href": "https://travis-ci.org/pilat/vscode-coverage-highlighter",
             "description": "Travis-CI"
         },
         {
-            "url": "https://codecov.io/gh/pilat/split-lines/branch/master/graph/badge.svg",
-            "href": "https://codecov.io/gh/pilat/split-lines",
+            "url": "https://codecov.io/gh/pilat/vscode-coverage-highlighter/branch/master/graph/badge.svg",
+            "href": "https://codecov.io/gh/pilat/vscode-coverage-highlighter",
             "description": "codecov"
         }
     ],
-    "homepage": "https://github.com/pilat/split-lines/blob/master/README.md",
+    "homepage": "https://github.com/pilat/vscode-coverage-highlighter/blob/master/README.md",
     "activationEvents": [
         "*"
     ],
