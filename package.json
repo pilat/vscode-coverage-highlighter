@@ -136,7 +136,6 @@
         "vscode": "^1.1.16"
     },
     "dependencies": {
-        "@types/xml2js": "^0.4.3",
         "cobertura-parse": "vokal/cobertura-parse#53109a677c995f5d2e90acd0fcd0b0788a6ec061",
         "debounce": "^1.2.0",
         "events": "^3.0.0",

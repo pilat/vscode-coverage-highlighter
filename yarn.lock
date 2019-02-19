@@ -56,14 +56,6 @@
   resolved "https://registry.yarnpkg.com/@types/simple-mock/-/simple-mock-0.8.1.tgz#bcb7d4bdd1d7c142008af3c32603c7088ad9af33"
   integrity sha512-Mn5n1v3S5yhhegOSUpXl2WTujBJfM1Oa0YTb9PpaYUq6Iqj6yOxy8h8lwMtNidKs3pAByhp1uIK0QP+OZCsotQ==
 
-"@types/xml2js@^0.4.3":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@types/xml2js/-/xml2js-0.4.3.tgz#2f41bfc74d5a4022511721f872ed395a210ad3b7"
-  integrity sha512-Pv2HGRE4gWLs31In7nsyXEH4uVVsd0HNV9i2dyASvtDIlOtSTr1eczPLDpdEuyv5LWH5LT20GIXwPjkshKWI1g==
-  dependencies:
-    "@types/events" "*"
-    "@types/node" "*"
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
