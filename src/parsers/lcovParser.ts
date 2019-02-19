@@ -1,7 +1,8 @@
-// @ts-ignore: We haven't declaration
-import lcovParse from 'lcov-parse';
+// import * as lcovParse from 'lcov-parse';
+import lcovParse, { LCov } from 'lcov-parse';
 
-import { ICoverage, ICoverageReport, IParser, ICoverage, ICoverageFragments, CoverageColor, ICoverageFragment } from './../types';
+
+import { ICoverageReport, IParser, ICoverage, CoverageColor, ICoverageCollection, ICoverageFragmentBase } from './../types';
 import * as path from 'path';
 
 import { CoverageCollection } from '../helpers/coverageCollection';
@@ -9,10 +10,10 @@ import { CoverageFlatFragment } from '../helpers/coverageFlatFragmet';
 
 
 export class LcovParser implements IParser {
-    public readonly name = 'lcov';
-    public readonly priority = 10;
+    public name = 'lcov';
+    public priority = 10;
 
-    constructor(private content: string, private folder: string) { }
+    constructor(protected content: string, protected folder: string) { }
 
     public static testFormat(ext: string, firstChunk: string): boolean {
         if (ext !== '.info') {
@@ -21,9 +22,10 @@ export class LcovParser implements IParser {
         return firstChunk.indexOf('TN:') !== -1 && firstChunk.indexOf('SF:') !== -1;
     }
 
-    public async getReport(): ICoverageReport {
+    public async getReport(): Promise<ICoverageReport> {
         const content = await this.getLcovData();
         const all: ICoverage[] = [];
+
         for (const coverage of this.parse(content)) {
             all.push(coverage);
         }
@@ -31,7 +33,7 @@ export class LcovParser implements IParser {
         return all;
     }
 
-    public *parse(content: object): ICoverage {
+    public *parse(content: LCov.CoverageCollection): IterableIterator<ICoverage> {
         for (const entry of content) {
             let filePath: string = entry.file;
             if (!path.isAbsolute(filePath)) {
@@ -44,9 +46,12 @@ export class LcovParser implements IParser {
                     throw new Error('Error format');
             }
 
-            const lines = this.makeCollection(entry.lines);
-            const branches = this.makeCollection(entry.branches);
-            const functions = this.makeCollection(entry.functions);
+            const lines = this.makeCollection<LCov.LineCoverageInfo>(entry.lines.details,
+                (o) => ({line: o.line, taken: o.hit > 0}));
+            const branches = this.makeCollection<LCov.BranchCoverageInfo>(entry.branches.details,
+                (o) => ({line: o.line, taken: !!o.taken}));
+            const functions = this.makeCollection<LCov.FunctionCoverageInfo>(entry.functions.details,
+                (o) => ({line: o.line, taken: o.hit > 0}));
 
             const coverage = new CoverageCollection();
             coverage
@@ -72,9 +77,27 @@ export class LcovParser implements IParser {
         }
     }
 
-    async private getLcovData() {
+    private makeCollection<T>(details: T[], callback: (e: T) => ({line: number, taken: boolean})): ICoverageCollection {
+        const collection = new CoverageCollection();
+        for (const detail of details) {
+            const info = callback(detail);
+            const props: ICoverageFragmentBase = {
+                // zero-based lines we need
+                start: {line: info.line - 1},
+                end: {line: info.line - 1},
+                color: info.taken ? CoverageColor.GREEN : CoverageColor.RED
+            };
+
+            const fragment = new CoverageFlatFragment(props);
+            collection.addItem(fragment);
+        }
+
+        return collection;
+    }
+
+    private getLcovData(): Promise<LCov.CoverageCollection> {
         return new Promise((resolve, reject) => {
-            lcovParse(this.content, (err: string, result: object[]) => {
+            lcovParse(this.content, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -82,21 +105,5 @@ export class LcovParser implements IParser {
                 }
             });
         });
-    }
-
-    private makeCollection(info: object): ICoverageFragments {
-        const collection = new CoverageCollection();
-        for (const detail of info.details) {
-            const props: ICoverageFragment = {
-                // zero-based lines we need
-                start: {line: detail.line - 1},
-                end: {line: detail.line - 1},
-                color: detail.hit > 0 ? CoverageColor.GREEN : CoverageColor.RED
-            };
-            const fragment = new CoverageFlatFragment(props);
-            collection.addItem(fragment);
-        }
-
-        return collection;
     }
 }

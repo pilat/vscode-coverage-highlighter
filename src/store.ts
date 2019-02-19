@@ -1,5 +1,5 @@
 import {IStore} from './flux';
-import { AppAction, IAppState, ICoverageFile } from './types';
+import { AppAction, IAppState, ICoverageFile, IConfig, ICoverageMap, ICoverageStat } from './types';
 
 
 export class AppStore implements IStore {
@@ -21,7 +21,7 @@ export class AppStore implements IStore {
         };
     }
 
-    public onAction(type: string, data: object, state: IAppState): IAppState {
+    public onAction(type: string, data: any, state: IAppState): IAppState {
         // console.log('Action: %s', type);
         switch (type) {
             case AppAction.APP_INIT:
@@ -31,24 +31,27 @@ export class AppStore implements IStore {
                 };
             case AppAction.SET_CONFIG:
             case AppAction.UPDATE_CONFIG:
-                return {...state, config: data.config};
+                const config: IConfig = data.config;
+                return {...state, config: config};
             case AppAction.TOGGLE_COVERAGE_DISPLAYING:
                 return {...state, displayCoverage: !state.displayCoverage};
             case AppAction.ADD_TASK_ID:
+                const randomHash: string = data.randomHash;
                 return {
                     ...state,
                     tasks: [
                         ...state.tasks,
-                        data.randomHash
+                        randomHash
                     ]
                 };
             case AppAction.REMOVE_TASK_ID:
+                const randomHash2: string = data.randomHash;
                 return {
                     ...state,
-                    tasks: [...state.tasks.filter((o) => o !== data.randomHash)]
+                    tasks: [...state.tasks.filter((o) => o !== randomHash2)]
                 };
             case AppAction.ADD_COVERAGE_FILE:
-                const coverageFile1 = data.coverageFile as ICoverageFile;
+                const coverageFile1: ICoverageFile = data.coverageFile;
                 return {
                     ...state,
                     files: [
@@ -57,22 +60,23 @@ export class AppStore implements IStore {
                     ]
                 };
             case AppAction.REMOVE_COVERAGE_FILE:
-                const coverageFile2 = data.coverageFile as ICoverageFile;
+                const coverageFile2: ICoverageFile = data.coverageFile;
                 return {
                     ...state,
                     files: state.files.filter((o) => o.uri !== coverageFile2.uri || o.folder !== coverageFile2.folder)
                 };
             case AppAction.ADD_FILES_MAP:
+                const coverageMap: ICoverageMap = data.map;
                 return {
                     ...state,
                     coverage: {
                         ...state.coverage,
-                        ...data.map
+                        ...coverageMap
                     }
                 };
             case AppAction.REDUCE_FILES_MAP:
                 const coverageCopy = {...state.coverage};
-                for (const file of data.files) {
+                for (const file of (data.files as string[])) {
                     delete coverageCopy[file];
                 }
                 return {
@@ -80,9 +84,10 @@ export class AppStore implements IStore {
                     coverage: coverageCopy
                 };
             case AppAction.UPDATE_COVERAGE_STAT:
+                const coverageStat: ICoverageStat|undefined = data.stat;
                 return {
                     ...state,
-                    coverageStat: data.stat
+                    coverageStat
                 };
         default:
             return state;

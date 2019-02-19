@@ -19,6 +19,7 @@
     ]
   },
   "typeRoots": [
+    "./src/@types/**/index.d.ts",
     "./node_modules/@types"
   ],
   "types": [
@@ -29,6 +30,7 @@
     "node_modules",
     ".vscode-test",
     "test/example",
-    "!node_modules/@types"
+    "!node_modules/@types",
+    "./src/types"
   ]
 }

@@ -66,7 +66,7 @@ suite('ProviderManager Tests', () => {
         await vscode.commands.executeCommand('workbench.action.splitEditor');
         assert.equal(providers.size, 2);
 
-        const _providers = Array.from(providers);
+        const _providers: any[] = Array.from(providers);
         _providers[0]._activated = _providers[1]._activated = false;
         await vscode.commands.executeCommand('workbench.action.navigateLeft');
         await sleep();

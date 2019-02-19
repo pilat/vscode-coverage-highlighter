@@ -7,69 +7,35 @@ import { join } from 'path';
 import fs from 'fs';
 import {mock, restore} from 'simple-mock';
 import { CoverageWatcher } from '../src/coverageWatcher';
+import { FileSystemWatcherStub } from './stubs/fsWatcher.stub';
 
-
-class DisposableMock {
-    public dispose() {
-        // noop
-    }
-}
-
-class FileSystemWatcherMock {
-    public _emitCreate: any;
-    public _emitChange: any;
-    public _emitDelete: any;
-
-    public onDidCreate (listener) {
-        this._emitCreate = listener;
-        return new DisposableMock();
-    }
-
-    public onDidChange (listener) {
-        this._emitChange = listener;
-        return new DisposableMock();
-    }
-
-    public onDidDelete (listener) {
-        this._emitDelete = listener;
-        return new DisposableMock();
-    }
-
-    public dispose() {
-        // noop
-    }
-}
-
-const DEBOUNCE_DELAY = 10;
-
-let store: StoreKeepeer;
-let component: CoverageWatcher;
-let mockedMethod: any;
-let fsWatcherMock: FileSystemWatcherMock;
-
-const projectFolder: vscode.WorkspaceFolder = {
-    uri: vscode.Uri.file(EXAMPLE_WORKSPACE)
-};
-
-const observableFile = vscode.Uri.file(join(projectFolder.uri.fsPath, 'observable.xml'));
-
-async function init() {
-    Flux.dispatch({type: AppAction.APP_INIT});
-    await sleep(300);
-}
 
 suite('CoverageWatcher Tests', () => {
+    const DEBOUNCE_DELAY = 10;
+    const projectFolder = { uri: vscode.Uri.file(EXAMPLE_WORKSPACE) };
+    const observableFile = vscode.Uri.file(join(projectFolder.uri.fsPath, 'observable.xml'));
+
+    let store: StoreKeepeer;
+    let component: CoverageWatcher;
+    let mockedMethod: any;
+    let fsWatcher: FileSystemWatcherStub;
+
+    async function init() {
+        Flux.dispatch({type: AppAction.APP_INIT});
+        await sleep(300);
+    }    
+
     setup(async () => {
         store = await getTestStore();
 
         // fileSystemWatcher doesn't work outside workspace, so..
         mockedMethod = mock(vscode.workspace, 'createFileSystemWatcher').callFn((..._) => {
-            fsWatcherMock = new FileSystemWatcherMock();
-            return fsWatcherMock;
+            fsWatcher = new FileSystemWatcherStub();
+            return fsWatcher;
         });
 
         Flux.dispatch({type: AppAction.SET_CONFIG, config: {files: ['observabl*.xml']}});
-        component = new CoverageWatcher(projectFolder, DEBOUNCE_DELAY / 2);
+        component = new CoverageWatcher(projectFolder as vscode.WorkspaceFolder, DEBOUNCE_DELAY / 2);
     });
 
     teardown(async () => {
@@ -96,14 +62,14 @@ suite('CoverageWatcher Tests', () => {
 
     test('Coverage file will be created', async () => {
         await init();
-        fsWatcherMock._emitCreate(observableFile);
+        fsWatcher._emitCreate(observableFile);
         await sleep(DEBOUNCE_DELAY);
         assert.ok(store.lastActionType === 'ADD_COVERAGE_FILE');
     });
 
     test('Coverage file will be changed (but has no added)', async () => {
         await init();
-        fsWatcherMock._emitChange(observableFile);
+        fsWatcher._emitChange(observableFile);
         await sleep(DEBOUNCE_DELAY);
         // assert.ok(store.hasAction('REMOVE_COVERAGE_FILE'))
         assert.ok(store.lastActionType === 'ADD_COVERAGE_FILE');
@@ -112,7 +78,7 @@ suite('CoverageWatcher Tests', () => {
     test('Coverage file will be really changed', async () => {
         fs.copyFileSync(join(FILES_DIR, 'cov.xml'), observableFile.fsPath);
         await init();
-        fsWatcherMock._emitChange(observableFile);
+        fsWatcher._emitChange(observableFile);
         await sleep(DEBOUNCE_DELAY);
         assert.ok(store.hasAction('REMOVE_COVERAGE_FILE'));
         assert.ok(store.lastActionType === 'ADD_COVERAGE_FILE');
@@ -120,7 +86,7 @@ suite('CoverageWatcher Tests', () => {
 
     test('Coverage file will be deleted', async () => {
         await init();
-        fsWatcherMock._emitDelete(observableFile);
+        fsWatcher._emitDelete(observableFile);
         await sleep(DEBOUNCE_DELAY);
         assert.ok(store.hasAction('REMOVE_COVERAGE_FILE'));
     });

@@ -1,61 +1,39 @@
 import { Flux } from '../src/flux/flux';
 import { CoverageParser } from './../src/coverageParser';
 import { HighlightProvider } from './../src/highlightProvider';
-import { AppAction, IWatcher } from './../src/types';
+import { AppAction } from './../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, getTestStore, openFile, COVERAGE_FILE, closeAllEditors } from './common';
 import {mock, restore, Spy} from 'simple-mock';
-
-class TextEditorMock {
-    constructor(private realEditor: vscode.TextEditor) { }
-
-    public get document() {
-        return this.realEditor.document;
-    }
-
-    public setDecorations(_color: any, ranges: any[]): Spy {
-        if (ranges.length === 0) {
-            return 'removed';
-        } else {
-            return 'added';
-        }
-    }
-
-    public dispose() {
-        // noop
-    }
-}
-
-// export const workspace = new Workspace();
-
-
-let store;
-let component;
-let editorMock: TextEditorMock;
-const baseConfig = {defaultState: true, greenBgColor: '#00ff00', redBgColor: '#FF0000', isWholeLine: true};
-let coverageParser;
-
-async function addCoverage() {
-    Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
-    await sleep(200);
-}
+import { TextEditorStub } from './stubs/textEditor.stub';
 
 
 suite('HighlightProvider Tests', () => {
+    let component: HighlightProvider;
+    let decorationMock: Spy<string>;
+    const baseConfig = {defaultState: true, greenBgColor: '#00ff00', redBgColor: '#FF0000', isWholeLine: true};
+    let coverageParser: CoverageParser;
+
+    async function addCoverage() {
+        Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
+        await sleep(200);
+    }
+
     setup(async () => {
         // Open real covered file
         await openFile('src/file1.ts');
 
         // Create editor mock based on original document
-        editorMock = new TextEditorMock(vscode.window.activeTextEditor); // TODO: only document
-        mock(editorMock, 'setDecorations');
+        const editor = new TextEditorStub(vscode.window.activeTextEditor); // TODO: only document
+        decorationMock = mock(editor, 'setDecorations');
 
-        store = await getTestStore();
+        await getTestStore();
         coverageParser = new CoverageParser();
         Flux.dispatch({type: AppAction.SET_CONFIG, config: baseConfig});
 
-        component = new HighlightProvider(editorMock);
+        // @ts-ignore Mock
+        component = new HighlightProvider(editor);
         Flux.dispatch({type: AppAction.APP_INIT});
         await sleep();
     });
@@ -68,32 +46,32 @@ suite('HighlightProvider Tests', () => {
     });
 
     test('No coverage file, no decorations', async () => {
-        assert.ok(editorMock.setDecorations.called === false);
+        assert.ok(decorationMock.called === false);
     });
 
     // Stat without decoration
 
     test('Add coverage -> show decorations', async () => {
         await addCoverage();
-        assert.ok(editorMock.setDecorations.callCount === 2);
-        assert.ok(editorMock.setDecorations.lastCall.returned === 'added');
+        assert.ok(decorationMock.callCount === 2);
+        assert.ok(decorationMock.lastCall.returned === 'added');
     });
 
     test('Remove coverage -> remove decorations', async () => {
         await addCoverage();
         Flux.dispatch({type: AppAction.REMOVE_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
         await sleep(200);
-        assert.ok(editorMock.setDecorations.called);
-        assert.ok(editorMock.setDecorations.lastCall.returned === 'removed');
+        assert.ok(decorationMock.called);
+        assert.ok(decorationMock.lastCall.returned === 'removed');
     });
 
     test('Config was changed, one of colors was changed, all decorators will be replaced', async () => {
         await addCoverage();
         Flux.dispatch({type: AppAction.UPDATE_CONFIG, config: {...baseConfig, redBgColor: '#ddeedd'}});
         await sleep(200);
-        assert.ok(editorMock.setDecorations.callCount === 6);
+        assert.ok(decorationMock.callCount === 6);
         assert.deepEqual(
-            editorMock.setDecorations.calls.map((o) => o.returned),
+            decorationMock.calls.map((o) => o.returned),
             ['added', 'added', 'removed', 'removed', 'added', 'added']);
     });
 
@@ -101,7 +79,7 @@ suite('HighlightProvider Tests', () => {
         await addCoverage();
         Flux.dispatch({type: AppAction.TOGGLE_COVERAGE_DISPLAYING});
         await sleep(100);
-        assert.ok(editorMock.setDecorations.callCount === 4);
-        assert.ok(editorMock.setDecorations.lastCall.returned === 'removed');
+        assert.ok(decorationMock.callCount === 4);
+        assert.ok(decorationMock.lastCall.returned === 'removed');
     });
 });

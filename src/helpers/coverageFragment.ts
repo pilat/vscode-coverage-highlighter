@@ -1,52 +1,56 @@
+import { ICoverageFragmentBase, ICoverageCollection } from './../types';
 import { ICoveragePosition, CoverageColor, ICoverageFragment } from '../types';
-import { CoverageCollection } from './coverageCollection';
 
 
-export class CoverageFragment {
-    public start: ICoveragePosition;
-    public end: ICoveragePosition;
-    public color: CoverageColor;
-    public note: string|undefined;
-    private _collection: CoverageCollection|undefined;
+export class CoverageFragment implements ICoverageFragment {
+    /**
+     * Fragment with lines and columns
+     */
 
-    constructor(props: ICoverageFragment) {
-        this.start = {
+    private _start: ICoveragePosition;
+    private _end: ICoveragePosition;
+    private _color: CoverageColor;
+    private _note: string|undefined;
+    private _collection: ICoverageCollection|undefined;
+
+    constructor(props: ICoverageFragmentBase) {
+        this._start = {
             line: props.start.line,
             column: props.start.column
         }
-        this.end = {
+        this._end = {
             line: props.end.line,
             column: props.end.column
         }
-        this.color = props.color
-        this.note = props.note
-        if (this.start.column === undefined || this.end.column === undefined) {
+        this._color = props.color
+        this._note = props.note
+        if (this._start.column === undefined || this._end.column === undefined) {
             throw new Error('Only lines with columns are supported')
         }
     }
 
     public get flatStart(): number {
         this._verifyMaxColumns()
-        return this.start.line * this._collection.maxColumns + this.start.column;
+        return this._start.line * this._collection.maxColumns + this._start.column;
     }
 
     public get flatEnd(): number {
         this._verifyMaxColumns()
-        return this.end.line * this._collection.maxColumns + this.end.column
+        return this._end.line * this._collection.maxColumns + this._end.column
     }
 
     public set flatStart(value: number) {
         this._verifyMaxColumns()
         const coef = this._collection.maxColumns;
-        this.start.line = Math.floor(value / coef);
-        this.start.column = value % coef
+        this._start.line = Math.floor(value / coef);
+        this._start.column = value % coef
     }
 
     public set flatEnd(value: number) {
         this._verifyMaxColumns()
         const coef = this._collection.maxColumns || 1;
-        this.end.line = Math.floor(value / coef);
-        this.end.column = value % coef
+        this._end.line = Math.floor(value / coef);
+        this._end.column = value % coef
     }
 
     private _verifyMaxColumns() {
@@ -59,19 +63,35 @@ export class CoverageFragment {
         return this.flatEnd - this.flatStart;
     }
 
-    public dump(): ICoverageFragment {
+    public dump(): ICoverageFragmentBase {
         return {
             start: {
-                line: this.start.line,
-                column: this.start.column
+                line: this._start.line,
+                column: this._start.column
             },
             end: {
-                line: this.end.line,
-                column: this.end.column
+                line: this._end.line,
+                column: this._end.column
             },
-            color: this.color,
-            note: this.note
+            color: this._color,
+            note: this._note
         }
+    }
+
+    public get start(): ICoveragePosition {
+        return this._start;
+    }
+
+    public get end(): ICoveragePosition {
+        return this._end;
+    }
+
+    public get color(): CoverageColor {
+        return this._color;
+    }
+
+    public get note(): string|undefined {
+        return this._note;
     }
 
     public clone() {
@@ -85,15 +105,18 @@ export class CoverageFragment {
         return isCollision;
     }
 
-    public set collection(collection: CoverageCollection) {
+    public set collection(collection: ICoverageCollection) {
         this._collection = collection;
     }
 
-    public get collection(): CoverageCollection|undefined {
+    public get collection(): ICoverageCollection {
+        if (this._collection === undefined) {
+            throw new Error('Collection is not set')
+        }
         return this._collection;
     }
 
     public toString(): string {
-        return `CoverageFragment (${this.flatStart}-${this.flatEnd}); (${this.start.line + 1}:${this.start.column} - ${this.end.line + 1}:${this.end.column}) [${this.color}]`
+        return `CoverageFragment (${this.flatStart}-${this.flatEnd}); (${this._start.line + 1}:${this._start.column} - ${this._end.line + 1}:${this._end.column}) [${this._color}]`
     }
 }

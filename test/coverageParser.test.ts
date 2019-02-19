@@ -5,11 +5,10 @@ import { sleep, getTestStore, COVERAGE_FILE, StoreKeepeer } from './common';
 import { CoverageParser } from '../src/coverageParser';
 
 
-let store: StoreKeepeer;
-let component;
-
-
 suite('CoverageParser Tests', () => {
+    let store: StoreKeepeer;
+    let component: CoverageParser;
+
     setup(async () => {
         store = await getTestStore();
 

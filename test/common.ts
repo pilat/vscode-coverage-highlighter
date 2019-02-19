@@ -80,7 +80,7 @@ export class StoreKeepeer implements IMiddleware {
     private _lastActionType: string = '';
     private _actions: string[] = [];
 
-    public get state() {
+    public get state(): any {
         return this.currentState;
     }
 

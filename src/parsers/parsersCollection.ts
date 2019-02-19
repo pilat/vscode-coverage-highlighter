@@ -1,11 +1,11 @@
-import { TParser, IParser } from './../types';
+import { TParser } from './../types';
 import { CoberturaParser } from './coberturaParser';
 import { LcovParser } from './lcovParser';
 import { IstanbulParser } from './istanbulParser';
 
 
 export class ParsersCollection {
-    public static readonly PARSERS: IParser[] = [CoberturaParser, LcovParser, IstanbulParser];
+    public static readonly PARSERS = [CoberturaParser, LcovParser, IstanbulParser];
 
     public find(ext: string, firstChunk: string): TParser|undefined {
         // apply for each parser

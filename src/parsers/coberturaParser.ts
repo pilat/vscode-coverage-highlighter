@@ -1,5 +1,4 @@
-// @ts-ignore: We haven't declaration
-import { parseContent } from 'cobertura-parse';
+import { parseContent, CobCov } from 'cobertura-parse';
 
 
 import { ICoverage, ICoverageReport, IParser } from './../types';
@@ -7,10 +6,10 @@ import { LcovParser } from './lcovParser';
 
 
 export class CoberturaParser extends LcovParser implements IParser {
-    public readonly name = 'cobertura';
-    public readonly priority = 10;
+    public name = 'cobertura';
+    public priority = 10;
 
-    constructor(private content: string, private folder: string) {
+    constructor(content: string, folder: string) {
         super(content, folder);
     }
 
@@ -21,9 +20,10 @@ export class CoberturaParser extends LcovParser implements IParser {
         return firstChunk.indexOf('<coverage') !== -1 && firstChunk.indexOf('lines-covered') !== -1;
     }
 
-    public async getReport(): ICoverageReport {
-        const content = await this.getData();
+    public async getReport(): Promise<ICoverageReport> {
+        const content = await this.getCobData();
         const all: ICoverage[] = [];
+
         for (const coverage of this.parse(content)) {
             all.push(coverage);
         }
@@ -31,9 +31,9 @@ export class CoberturaParser extends LcovParser implements IParser {
         return all;
     }
 
-    async private getData() {
+    private getCobData(): Promise<CobCov.CoverageCollection> {
         return new Promise((resolve, reject) => {
-            parseContent(this.content, (err: string, result: object[]) => {
+            parseContent(this.content, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {

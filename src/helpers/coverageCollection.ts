@@ -1,73 +1,37 @@
-import { CoverageFragment } from './coverageFragment';
-import { CoverageFlatFragment } from './coverageFlatFragmet';
-import { CoverageColor, ICoverageFragments } from '../types';
+import { ICoverageFragment, ICoverageFragmentBase, ICoverageCollectionStat } from './../types';
+import { CoverageColor, ICoverageCollection } from '../types';
 
 
-type Fragment = CoverageFlatFragment | CoverageFragment
+// type Fragment = typeof CoverageFlatFragment | typeof CoverageFragment
 
 
-export class CoverageCollection {
+export class CoverageCollection implements ICoverageCollection {
     private _maxColumn: number|undefined;
-    private _items: Set<Fragment> = new Set();
-    private _stat: object|undefined;
+    private _items: Set<ICoverageFragment> = new Set();
+    private _stat: ICoverageCollectionStat|undefined;
     private _frozen: boolean;
 
-    public addItem(fragment: Fragment): void {
+    public addItem(fragment: ICoverageFragment): void {
         this._checkFrozen();
         this._addItem(fragment);
     }
 
-    public removeItem(fragment: Fragment) {
+    public removeItem(fragment: ICoverageFragment) {
         this._checkFrozen();
         this._removeItem(fragment);
     }
 
-    public merge(collection: CoverageCollection) {
+    public merge(collection: ICoverageCollection): ICoverageCollection {
         this._checkFrozen();
         return this._merge(collection);
     }
 
-    public dump(): ICoverageFragments {
-        return Array.from(this._items).map((o) => o.dump()); // as simple object for flux
+    public dump(): ICoverageFragmentBase[] {
+        return Array.from(this._items).map((o) => o.dump());
     }
 
-    public get items(): Set<Fragment> {
+    public get items(): Set<ICoverageFragment> {
         return this._items;
-    }
-
-    private _freeze() {
-        this._checkFrozen();
-        this._frozen = true;
-    }
-    
-    private _unfreeze() {
-        this._frozen = false;
-    }
-
-    private _checkFrozen() {
-        if (this._frozen) {
-            throw new Error('This collection has been frozen')
-        }
-    }
-
-    private _addItem(fragment: Fragment): void {
-        this._stat = undefined;
-        const newItem = fragment.clone()
-        newItem.collection = this;
-        this._items.add(newItem);
-    }
-
-    private _removeItem(fragment: Fragment) {
-        this._stat = undefined;
-        this._items.delete(fragment);
-    }
-
-    private _merge(collection: CoverageCollection) {
-        this._stat = undefined;
-        for (let b of collection.items) {
-            this._addItem(b.clone())
-        }
-        return this;
     }
 
     public normalize() {
@@ -111,6 +75,41 @@ export class CoverageCollection {
         return this._maxColumn;
     }
 
+    private _freeze() {
+        this._checkFrozen();
+        this._frozen = true;
+    }
+    
+    private _unfreeze() {
+        this._frozen = false;
+    }
+
+    private _checkFrozen() {
+        if (this._frozen) {
+            throw new Error('This collection has been frozen')
+        }
+    }
+
+    private _addItem(fragment: ICoverageFragment): void {
+        this._stat = undefined;
+        const newItem = fragment.clone()
+        newItem.collection = this;
+        this._items.add(newItem);
+    }
+
+    private _removeItem(fragment: ICoverageFragment) {
+        this._stat = undefined;
+        this._items.delete(fragment);
+    }
+
+    private _merge(collection: ICoverageCollection): ICoverageCollection {
+        this._stat = undefined;
+        for (let b of collection.items) {
+            this._addItem(b.clone())
+        }
+        return this;
+    }
+
     private _normalize() {
         while(-1) {
             const collisionPair = this._hasCollision();
@@ -121,7 +120,7 @@ export class CoverageCollection {
         }
     }
 
-    private _fixCollision(collisionPair: [Fragment, Fragment]) {
+    private _fixCollision(collisionPair: [ICoverageFragment, ICoverageFragment]) {
         // Not neccesary which fragment is new. But old must be < than new
         let [oldFragment, newFragment] = collisionPair;
         if (oldFragment.length < newFragment.length) {
@@ -141,9 +140,9 @@ export class CoverageCollection {
             // union fragments. Update new fragment and remove old fragment
             newFragment.flatStart = Math.min(newFragment.flatStart, oldFragment.flatStart)
             newFragment.flatEnd = Math.max(newFragment.flatEnd, oldFragment.flatEnd)
-            if (newFragment.note || oldFragment.note) {
-                newFragment.note = `${newFragment.note || ''} ${oldFragment.note || ''}`.trim()
-            }
+            // if (newFragment.note || oldFragment.note) {
+            //     newFragment.note = `${newFragment.note || ''} ${oldFragment.note || ''}`.trim()
+            // }
             this._removeItem(oldFragment);
         } else if (oldFragment.color > newFragment.color) {
             // keep old fragment and use part of new fragment if nessesary
@@ -182,7 +181,7 @@ export class CoverageCollection {
         }
     }
 
-    private _hasCollision(): [Fragment, Fragment]|undefined {
+    private _hasCollision(): [ICoverageFragment, ICoverageFragment]|undefined {
         const items = Array.from(this._items);
 
         // From down to up

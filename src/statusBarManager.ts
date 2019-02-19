@@ -34,7 +34,7 @@ export class StatusBarManager extends App {
     }
 
     private redraw() {
-        const tasks = Flux.getState('tasks') as ITask[];
+        const tasks = Flux.getState('tasks') as ITask;
         if (tasks.length > 0) {
             this.statusBar.show();
             this.statusBar.text = '$(repo-sync)';

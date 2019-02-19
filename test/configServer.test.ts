@@ -3,13 +3,14 @@ import { AppAction } from '../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { ConfigServer } from '../src/configServer';
-import { sleep, getTestStore } from './common';
+import { sleep, getTestStore, StoreKeepeer } from './common';
 import { randomId } from '../src/helpers/utils';
 
-let store;
-let component;
 
 suite('Config Tests', () => {
+    let store: StoreKeepeer;
+    let component: ConfigServer;
+
     setup(async () => {
         store = await getTestStore();
 

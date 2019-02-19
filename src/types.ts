@@ -1,3 +1,4 @@
+import { ICoverageFragment } from './types';
 import { TextEditor, WorkspaceFolder } from 'vscode';
 
 
@@ -33,7 +34,7 @@ export interface IConfig {
 // flux
 export interface IAppState {
     displayCoverage: boolean;
-    tasks: ITask[];
+    tasks: ITask;
     config: IConfig;
     files: ICoverageFile[];
     coverage: ICoverageMap;
@@ -95,13 +96,13 @@ export interface IExtensionApi {
 
 ////////////////////// Coverage
 export type ICoverageReport = ICoverage[];
-export type ICoverageFragments = ICoverageFragment[];
+// export type ICoverageFragments = ICoverageFragmentBase[];
 
 export interface ICoverage {
     priority: number;  // parser's value
     file: string;
     stat?: ICoverageStat;
-    fragments: ICoverageFragments;
+    fragments: ICoverageFragmentBase[];
     withGreenBg?: boolean;
 }
 
@@ -110,7 +111,7 @@ export interface ICoverageStat {
     tooltip?: string;
 }
 
-export interface ICoverageFragment {
+export interface ICoverageFragmentBase {
     start: ICoveragePosition;
     end: ICoveragePosition;
     color: CoverageColor;
@@ -126,4 +127,44 @@ export enum CoverageColor {
     GREEN_BG = 0b01, // covered line
     GREEN = 0b10, // covered fragment or line
     RED = 0b11 // uncovered fragment or line
+}
+
+
+
+// Coverage utils
+
+export interface ICoverageCollectionStat {
+    covered: number;
+    uncovered: number;
+    total: number;
+}
+
+export interface ICoverageCollection {  // TODO: see also ICoverage
+    addItem(fragment: ICoverageFragment): void;
+    removeItem(fragment: ICoverageFragment): void;
+    merge(collection: ICoverageCollection): ICoverageCollection;
+    // dump(): ICoverageFragments;
+    readonly items: Set<ICoverageFragment>;
+    dump(): ICoverageFragmentBase[];
+    normalize(): void;
+    readonly stat: ICoverageCollectionStat;
+    maxColumns: number;
+
+}
+
+export interface ICoverageFragment { // TODO: See ICoverageFragmentBase
+    // constructor(props: ICoverageFragmentBase);
+    flatStart: number;
+    flatEnd: number;
+    length: number;
+    dump(): ICoverageFragmentBase;
+    clone(): ICoverageFragment;
+    isCollisionWith(fragment: ICoverageFragment): boolean;
+    collection: ICoverageCollection;
+    toString(): string;
+
+    readonly start: ICoveragePosition;
+    readonly end: ICoveragePosition;
+    readonly color: CoverageColor;
+    readonly note?: string;
 }
