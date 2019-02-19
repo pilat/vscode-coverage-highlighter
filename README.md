@@ -11,7 +11,7 @@
 
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/brainfit.vscode-coverage-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=brainfit.vscode-coverage-highlighter) 
 [![Build Status](https://travis-ci.org/pilat/vscode-coverage-highlighter.svg?branch=master)](https://travis-ci.org/pilat/vscode-coverage-highlighter)
-[![codecov](https://codecov.io/gh/pilat/vscode-coverage-highlighter/branch/master/graph/badge.svg)](https://codecov.io/gh/pilat/vscode-coverage-highlighter)
+[![codecov](https://codecov.io/gh/pilat/vscode-coverage-highlighter/branch/master/graph/badge.svg)](https://codecov.io/gh/pilat/vscode-coverage-highlighter) [![Greenkeeper badge](https://badges.greenkeeper.io/pilat/vscode-coverage-highlighter.svg)](https://greenkeeper.io/)
 
 
 ---
