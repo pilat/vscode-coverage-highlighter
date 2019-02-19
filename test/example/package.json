@@ -24,7 +24,9 @@
         "tslint": "^5.12.1",
         "typescript": "^3.3.1"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@types/node": "^11.9.4"
+    },
     "nyc": {
         "include": [
             "src/**/*.ts"
