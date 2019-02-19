@@ -2,21 +2,22 @@ import { Flux } from './flux';
 import { App } from './app';
 import { CoverageFile } from './coverageFile';
 import { CancellationTokenSource } from 'vscode';
-import { ICoverageReport, AppAction, CoverageFileActionTypes, ICoverageMap, ICoverage } from './types';
+import { ICoverageReport, AppAction, CoverageFileActionTypes, ICoverage, ICoverageMap } from './types';
 import { randomId } from './helpers/utils';
 
 
 export class CoverageParser extends App {
     /**
-     * Coverage watcher discovers coverage files and this class parses them.
-     * After parsing it saves coverage on store
+     * Coverage watcher discovers coverage files and parses them.
+     * After parsing it saves coverage results there and put actual information into store
      *
      * Listen: ADD_COVERAGE_FILE, REMOVE_COVERAGE_FILE
-     * Dispatch: ADD_TASK_ID, REMOVE_TASK_ID, ADD_FILES_MAP, REDUCE_FILES_MAP
+     * Dispatch: ADD_TASK_ID, REMOVE_TASK_ID, SET_FILES_MAP
      */
 
     private cancellationTokens: Map<string, CancellationTokenSource> = new Map();
-    private reverseMap: Map<string, string[]> = new Map();
+    // private reverseMap: Map<string, string[]> = new Map();
+    private localstore: Map<string, ICoverageReport> = new Map();
 
     public constructor() {
         super();
@@ -45,8 +46,8 @@ export class CoverageParser extends App {
                 }
 
                 if (!file.hasError) {
-                    const files = this.saveCoverage(file.report);
-                    this.reverseMap.set(coverageFile.uri, files);
+                    this.localstore.set(coverageFile.uri.toLowerCase(), file.report);
+                    this._updateStore();
                 }
             });
     }
@@ -60,26 +61,42 @@ export class CoverageParser extends App {
             this.cancellationTokens.delete(coverageFile.uri);
         }
 
-        // Cleanup coverage map...
-        const files = (this.reverseMap.get(coverageFile.uri) || []);
-        this.reverseMap.delete(coverageFile.uri);
-        Flux.dispatch({type: AppAction.REDUCE_FILES_MAP, files});
+        const filename = coverageFile.uri.toLowerCase();
+        if (this.localstore.has(filename)) {
+            this.localstore.delete(filename);
+            this._updateStore();
+        }
     }
 
-    private saveCoverage(report: ICoverageReport): string[] {
-        const files = [];
-        const map: ICoverageMap = {};
-        for (const coverage of report) {
-            const fileId = coverage.file.toLocaleLowerCase();
-            const currentCoverage: ICoverage|undefined = Flux.getState('coverage')[fileId];
-            if (currentCoverage && currentCoverage.priority >= coverage.priority) {
-                // When storage has already contained coverage info for this file
-                continue;
+    private _updateStore() {
+        const randomHash = randomId();
+        Flux.dispatch({type: AppAction.ADD_TASK_ID, randomHash});
+
+        let newMap: Map<string, ICoverage> = new Map();
+        // Put to the store files from all coverage sources and with best parser priority
+        for (const [, report] of this.localstore) {
+            for (const coverage of report) {
+                const fileId = coverage.file.toLocaleLowerCase();
+
+                if (newMap.has(fileId)) {
+                    const prevValue = newMap.get(fileId)
+                    if (prevValue.parserInfo.priority > coverage.parserInfo.priority) {
+                        // TODO: What about parser name comparing?..
+                        continue;
+                    } else {
+                        newMap.delete(fileId)
+                    }
+                }
+                newMap.set(fileId, coverage)
             }
-            files.push(fileId);
-            map[fileId] = coverage;
         }
-        Flux.dispatch({type: AppAction.ADD_FILES_MAP, map});
-        return files;
+
+        let newMapObj: ICoverageMap = {};
+        for (let [k, v] of newMap) {
+            newMapObj[k] = v;
+        }
+
+        Flux.dispatch({type: AppAction.SET_FILES_MAP, map: newMapObj});
+        Flux.dispatch({type: AppAction.REMOVE_TASK_ID, randomHash});
     }
 }

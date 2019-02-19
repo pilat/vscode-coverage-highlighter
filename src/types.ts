@@ -3,9 +3,14 @@ import { TextEditor, WorkspaceFolder } from 'vscode';
 
 
 export interface IParser {
-    readonly name: string;
-    readonly priority: number;
+    getInfo(): IParserInfo;
     getReport(): Promise<ICoverageReport>;
+}
+
+export interface IParserInfo {
+    name: string;
+    priority: number;
+    hasAdditionalColor: boolean;
 }
 
 export interface IProvider {
@@ -44,7 +49,7 @@ export interface IAppState {
 export type ITask = (number|string)[];
 
 export interface ICoverageMap {
-    [key: string]: ICoverage;
+    [filename: string]: ICoverage;
 }
 
 export interface ICoverageFile {
@@ -80,8 +85,7 @@ export enum AppAction {
     REMOVE_COVERAGE_FILE = 'REMOVE_COVERAGE_FILE',  // coverageFile: ICoverageFile
 
     // Add or remove from report...
-    ADD_FILES_MAP = 'ADD_FILES_MAP',  // map: kv[file] -> ICoverage
-    REDUCE_FILES_MAP = 'REDUCE_FILES_MAP',  // files
+    SET_FILES_MAP = 'SET_FILES_MAP',  // map: kv[file] -> ICoverage
 
     // Status bar:
     UPDATE_COVERAGE_STAT = 'UPDATE_COVERAGE_STAT',  // stat: ICoverageStat or undefined
@@ -99,11 +103,12 @@ export type ICoverageReport = ICoverage[];
 // export type ICoverageFragments = ICoverageFragmentBase[];
 
 export interface ICoverage {
-    priority: number;  // parser's value
+    // priority: number;  // parser's value
     file: string;
     stat?: ICoverageStat;
     fragments: ICoverageFragmentBase[];
-    withGreenBg?: boolean;
+    parserInfo: IParserInfo;
+    // withGreenBg?: boolean;
 }
 
 export interface ICoverageStat {

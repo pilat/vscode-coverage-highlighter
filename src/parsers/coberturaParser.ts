@@ -1,13 +1,18 @@
 import { parseContent, CobCov } from 'cobertura-parse';
 
 
-import { ICoverage, ICoverageReport, IParser } from './../types';
+import { ICoverage, ICoverageReport, IParser, IParserInfo } from './../types';
 import { LcovParser } from './lcovParser';
 
 
 export class CoberturaParser extends LcovParser implements IParser {
-    public name = 'cobertura';
-    public priority = 10;
+    public getInfo(): IParserInfo {
+        return {
+            name: 'cobertura',
+            priority: 10,
+            hasAdditionalColor: false
+        }
+    }
 
     constructor(content: string, folder: string) {
         super(content, folder);

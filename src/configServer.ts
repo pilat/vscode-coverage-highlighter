@@ -29,24 +29,46 @@ export class ConfigServer extends App {
         Flux.dispatch({type: AppAction.UPDATE_CONFIG, config: this.config});
     }
 
+    private isValidColor(value: string) {
+        return value.indexOf('rgba') === 0 || value.indexOf('#') === 0;
+    }
+
+    private isColorDisabled(value: string) {
+        return value === '';
+    }
+
     private getConfiguration() {
         const {
             wholeLine,
             files,
             defaultState,
-            colors
+            coveredColor,
+            unCoveredColor
         } = workspace.getConfiguration(this.configId);
-        let {green, red} = colors;
-        green = green || '#00ff00';
-        red = red || '#ff0000';
 
         this.config = {
             // Envisage string instead files array...
             files: typeof files === 'string' ? [files] : files,
             isWholeLine: !!wholeLine,
             defaultState: defaultState === 'enable' || defaultState === 1 || defaultState === true,
-            greenBgColor: green.indexOf('rgba') !== -1 || green.indexOf('#') === 0 ? green : undefined,
-            redBgColor: red.indexOf('rgba') !== -1 || red.indexOf('#') === 0 ? red : undefined
+            greenBgColor: undefined, // disabled
+            redBgColor: undefined // disabled
+            // greenBgColor:  ? coveredColor : undefined,
+            // redBgColor: unCoveredColor.indexOf('rgba') !== -1 || unCoveredColor.indexOf('#') === 0 ? unCoveredColor : undefined
         };
+        
+        if (!this.isColorDisabled(coveredColor)) {
+            this.config.greenBgColor = 'rgba(20, 250, 20, 0.1)'
+        }
+        if (!this.isColorDisabled(unCoveredColor)) {
+            this.config.redBgColor = 'rgba(255, 20, 20, 0.4)'
+        }
+
+        if (this.isValidColor(coveredColor)) {
+            this.config.greenBgColor = coveredColor
+        }
+        if (this.isValidColor(unCoveredColor)) {
+            this.config.redBgColor = unCoveredColor
+        }
     }
 }

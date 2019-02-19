@@ -65,23 +65,14 @@ export class AppStore implements IStore {
                     ...state,
                     files: state.files.filter((o) => o.uri !== coverageFile2.uri || o.folder !== coverageFile2.folder)
                 };
-            case AppAction.ADD_FILES_MAP:
+            case AppAction.SET_FILES_MAP:
                 const coverageMap: ICoverageMap = data.map;
                 return {
                     ...state,
                     coverage: {
-                        ...state.coverage,
+                        // ...state.coverage,
                         ...coverageMap
                     }
-                };
-            case AppAction.REDUCE_FILES_MAP:
-                const coverageCopy = {...state.coverage};
-                for (const file of (data.files as string[])) {
-                    delete coverageCopy[file];
-                }
-                return {
-                    ...state,
-                    coverage: coverageCopy
                 };
             case AppAction.UPDATE_COVERAGE_STAT:
                 const coverageStat: ICoverageStat|undefined = data.stat;

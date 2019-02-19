@@ -75,22 +75,25 @@
                         "disable"
                     ],
                     "default": "enable",
-                    "description": "Default coverage display state",
+                    "description": "Should coverage be shown by default?",
                     "scope": "resource"
                 },
                 "vscode-coverage-highlighter.wholeLine": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Show coverage line wide or not",
+                    "description": "Make coverage lines wide",
                     "scope": "resource"
                 },
-                "vscode-coverage-highlighter.colors": {
-                    "type": "object",
-                    "default": {
-                        "red": "rgba(255, 20, 20, 0.4)",
-                        "green": "rgba(20, 250, 20, 0.1)"
-                    },
-                    "description": "Lines decoration background colors. Use rgba/hex notation or pass empty string to disable it",
+                "vscode-coverage-highlighter.coveredColor": {
+                    "type": "string",
+                    "default": "rgba(20, 250, 20, 0.1)",
+                    "description": "Background color for covered lines. Use rgba/hex notation or pass empty string to disable it",
+                    "scope": "resource"
+                },
+                "vscode-coverage-highlighter.unCoveredColor": {
+                    "type": "string",
+                    "default": "rgba(255, 20, 20, 0.4)",
+                    "description": "Background color for un-covered lines. Use rgba/hex notation or pass empty string to disable it",
                     "scope": "resource"
                 }
             }

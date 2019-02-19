@@ -34,12 +34,12 @@ suite('Config Tests', () => {
     test('test config has changed on-fly', async () => {
         const c = vscode.workspace.getConfiguration('vscode-coverage-highlighter');
         const newValue = `rgba(${randomId()})`;
-        await c.update('colors', {green: newValue}, true);
+        await c.update('coveredColor', newValue, true);
         await sleep();
         assert.equal(store.lastActionType, 'UPDATE_CONFIG');
         const readedValue = Flux.getState('config.greenBgColor');
         assert.equal(readedValue, newValue);
-        await c.update('colors', undefined, true);  // restore
+        await c.update('coveredColor', undefined, true);  // restore
     });
     test('Test files are string', async () => {
         const c = vscode.workspace.getConfiguration('vscode-coverage-highlighter');
@@ -62,23 +62,23 @@ suite('Config Tests', () => {
     }
 
     for (const [optName, confName] of
-        [['green', 'greenBgColor'], ['red', 'redBgColor']]) {
+        [['coveredColor', 'greenBgColor'], ['unCoveredColor', 'redBgColor']]) {
         test(`Test disabled ${optName} color`, async () => {
             const c = vscode.workspace.getConfiguration('vscode-coverage-highlighter');
-            await c.update('colors', {[optName]: 'invalid_color'}, true);
+            await c.update(optName, '', true);
             await sleep();
             const readedValue = Flux.getState(`config.${confName}`);
             assert.equal(readedValue, undefined);
-            await c.update('colors', undefined, true);  // restore
+            await c.update(optName, undefined, true);  // restore
         });
     }
 
-    test('Config with bad colors section', async () => {
+    test('Config with bad color value', async () => {
         const c = vscode.workspace.getConfiguration('vscode-coverage-highlighter');
-        await c.update('colors', '123', true);
+        await c.update('unCoveredColor', 'invalid_color', true);
         await sleep();
         const readedValue = Flux.getState(`config.redBgColor`);
-        assert.equal(readedValue, '#ff0000');
-        await c.update('colors', undefined, true);  // restore
+        assert.equal(readedValue, 'rgba(255, 20, 20, 0.4)');
+        await c.update('unCoveredColor', undefined, true);  // restore
     });
 });

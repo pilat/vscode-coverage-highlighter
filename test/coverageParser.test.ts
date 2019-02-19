@@ -37,20 +37,23 @@ suite('CoverageParser Tests', () => {
     test('Add valid file and wait mapping', async () => {
         Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
         await sleep(100);
-        assert.ok(store.lastActionType === 'ADD_FILES_MAP');
+        assert.ok(store.hasAction('SET_FILES_MAP'));
         assert.ok(Object.keys(store.state.coverage).length > 0);
     });
 
-    for (const withDelay of [true, false]) {
-        test('Add and remove' + (withDelay ? '' : ' quickly') , async () => {
-            Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
-            if (withDelay) {
-                sleep(100);
-            }
-            Flux.dispatch({type: AppAction.REMOVE_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
-            await sleep();
-            assert.ok(store.hasAction('REDUCE_FILES_MAP'));
-            assert.ok(Object.keys(store.state.coverage).length === 0);
-        });
-    }
+    test('Add and remove quickly', async () => {
+        Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
+        Flux.dispatch({type: AppAction.REMOVE_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
+        await sleep();
+        assert.ok(!store.hasAction('SET_FILES_MAP'));
+    });
+
+    test('Add and remove quickly', async () => {
+        Flux.dispatch({type: AppAction.ADD_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
+        await sleep(300);
+        Flux.dispatch({type: AppAction.REMOVE_COVERAGE_FILE, coverageFile: COVERAGE_FILE});
+        await sleep();
+        assert.ok(store.hasAction('SET_FILES_MAP'));
+        assert.ok(Object.keys(store.state.coverage).length === 0);
+    });
 });

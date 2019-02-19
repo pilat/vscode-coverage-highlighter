@@ -1,4 +1,4 @@
-import { ICoverage, IParser, CoverageColor, ICoverageReport, ICoverageFragmentBase } from './../types';
+import { ICoverage, IParser, CoverageColor, ICoverageReport, ICoverageFragmentBase, IParserInfo } from './../types';
 import path from 'path';
 import zipWith from 'lodash/zipWith';
 import { CoverageFragment } from '../helpers/coverageFragment';
@@ -58,8 +58,13 @@ namespace IIstambul {
 
 
 export class IstanbulParser implements IParser {
-    public name = 'istambul';
-    public priority = 20;
+    public getInfo(): IParserInfo {
+        return {
+            name: 'istambul',
+            priority: 20,
+            hasAdditionalColor: true
+        }
+    }
 
     constructor(private content: string, private folder: string) { }
 
@@ -98,7 +103,7 @@ export class IstanbulParser implements IParser {
                 (item) => [item]);
             const functions = this.makeCollection<number, IIstambul.IFunction>(entry.f, entry.fnMap,
                 (item) => [item],
-                (item) => [item.loc]);
+                (item) => item.skip ? [] : [item.loc]);
 
             const coverage = new CoverageCollection();
             coverage
@@ -131,14 +136,13 @@ export class IstanbulParser implements IParser {
             }
 
             const ret: ICoverage = {
-                priority: this.priority,
                 file: filePath,
                 stat: {
                     label: `${percent}%`,
                     tooltip: tooltips.join('\n')
                 },
                 fragments: coverage.dump(),
-                withGreenBg: true
+                parserInfo: this.getInfo()
             };
             yield ret;
         }
@@ -155,9 +159,16 @@ export class IstanbulParser implements IParser {
                 const blockCounts = callbackIds(idsSource[blockId])
                 const locations = callbackMap(mapSource[blockId]);
 
+                if (locations.length !== blockCounts.length) {
+                    continue
+                }
+
                 zipWith(locations, blockCounts, (a, b) => {
                     if (a.start.line < 1 || a.end.line < 1) {
                         return;
+                    }
+                    if (a.skip) {
+                        return
                     }
                     // Sometimes start and end could contain warning values
                     if (a.start.line === a.end.line && a.start.column > a.end.column) {

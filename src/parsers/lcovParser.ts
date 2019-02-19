@@ -2,7 +2,7 @@
 import lcovParse, { LCov } from 'lcov-parse';
 
 
-import { ICoverageReport, IParser, ICoverage, CoverageColor, ICoverageCollection, ICoverageFragmentBase } from './../types';
+import { ICoverageReport, IParser, ICoverage, CoverageColor, ICoverageCollection, ICoverageFragmentBase, IParserInfo } from './../types';
 import * as path from 'path';
 
 import { CoverageCollection } from '../helpers/coverageCollection';
@@ -10,10 +10,15 @@ import { CoverageFlatFragment } from '../helpers/coverageFlatFragmet';
 
 
 export class LcovParser implements IParser {
-    public name = 'lcov';
-    public priority = 10;
-
     constructor(protected content: string, protected folder: string) { }
+
+    public getInfo(): IParserInfo {
+        return {
+            name: 'lcov',
+            priority: 10,
+            hasAdditionalColor: false
+        }
+    }
 
     public static testFormat(ext: string, firstChunk: string): boolean {
         if (ext !== '.info') {
@@ -66,12 +71,12 @@ export class LcovParser implements IParser {
             }
 
             const ret: ICoverage = {
-                priority: this.priority,
                 file: filePath,
                 stat: {
                     label: `${percent}%`
                 },
-                fragments: coverage.dump()
+                fragments: coverage.dump(),
+                parserInfo: this.getInfo()
             };
             yield ret;
         }

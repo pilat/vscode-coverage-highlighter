@@ -102,10 +102,11 @@ The extension supports two colors. For covered and uncovered lines. It would be 
 You also can disable one or more colors completely. Just pass empty string for color and decoration won't be shown.
 
 ```json
-"vscode-coverage-highlighter.colors": {
-    "green": "rgba(20, 250, 20, 0.1)",
-    "red": "rgba(255, 20, 20, 0.4)"
-} 
+"vscode-coverage-highlighter.coveredColor": "rgba(20, 250, 20, 0.1)",
+```
+
+```json
+"vscode-coverage-highlighter.unCoveredColor": "rgba(255, 20, 20, 0.4)"
 ```
 
 

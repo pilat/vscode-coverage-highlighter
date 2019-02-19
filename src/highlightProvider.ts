@@ -8,7 +8,7 @@ export class HighlightProvider extends App implements IProvider {
     /**
      * Provider for each editor
      *
-     * Listen: UPDATE_CONFIG, ADD_FILES_MAP, REDUCE_FILES_MAP, TOGGLE_COVERAGE_DISPLAYING
+     * Listen: UPDATE_CONFIG, SET_FILES_MAP, TOGGLE_COVERAGE_DISPLAYING
      * Dispatch: none
      */
 
@@ -24,8 +24,7 @@ export class HighlightProvider extends App implements IProvider {
         super();
         this.config = Flux.getState('config');
         Flux.on(AppAction.UPDATE_CONFIG, this.onConfigChange, this, this.disposables);
-        Flux.on(AppAction.ADD_FILES_MAP, this.onMapChange, this, this.disposables);
-        Flux.on(AppAction.REDUCE_FILES_MAP, this.onMapChange, this, this.disposables);
+        Flux.on(AppAction.SET_FILES_MAP, this.onMapChange, this, this.disposables);
         Flux.on(AppAction.TOGGLE_COVERAGE_DISPLAYING, this.redraw, this, this.disposables);
     }
 
@@ -58,7 +57,7 @@ export class HighlightProvider extends App implements IProvider {
         this._currentRed = null;
         if (this.config.redBgColor) {
             this._currentRed = window.createTextEditorDecorationType({
-                isWholeLine: this.config.isWholeLine && !this.coverage.withGreenBg,
+                isWholeLine: this.config.isWholeLine && !this.coverage.parserInfo.hasAdditionalColor,
                 rangeBehavior: DecorationRangeBehavior.ClosedClosed, //ClosedOpen,
                 outline: 'none',
                 backgroundColor: this.config.redBgColor,
@@ -113,7 +112,6 @@ export class HighlightProvider extends App implements IProvider {
 
     private onConfigChange() {
         this._removeDecorations();
-        this._disposeColors();
         this.config = Flux.getState('config');
         this.redraw();
     }
@@ -142,7 +140,7 @@ export class HighlightProvider extends App implements IProvider {
             return;
         }
         const redRanges = this.makeRange(CoverageColor.RED);
-        const greenRanges = this.makeRange(this.config.isWholeLine && this.coverage.withGreenBg ?
+        const greenRanges = this.makeRange(this.config.isWholeLine && this.coverage.parserInfo.hasAdditionalColor ?
             CoverageColor.GREEN_BG : CoverageColor.GREEN);
 
         if (redRanges !== undefined && this.currentRed) {
@@ -167,6 +165,7 @@ export class HighlightProvider extends App implements IProvider {
             this.editor.setDecorations(this.currentGreen, []);
         }
 
+        this._disposeColors();
         this.currentState = false;
     }
 
