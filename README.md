@@ -9,7 +9,7 @@
 
 <p align="center">This is a <a href="https://code.visualstudio.com">Visual Studio Code</a> extension that allows you to see your code coverage.</p>
 
-<!-- [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/brainfit.vscode-coverage-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=brainfit.vscode-coverage-highlighter)  -->
+[![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/brainfit.vscode-coverage-highlighter.svg)](https://marketplace.visualstudio.com/items?itemName=brainfit.vscode-coverage-highlighter) 
 [![Build Status](https://travis-ci.org/pilat/vscode-coverage-highlighter.svg?branch=master)](https://travis-ci.org/pilat/vscode-coverage-highlighter)
 [![codecov](https://codecov.io/gh/pilat/vscode-coverage-highlighter/branch/master/graph/badge.svg)](https://codecov.io/gh/pilat/vscode-coverage-highlighter)
 
