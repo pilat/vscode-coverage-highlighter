@@ -1,7 +1,7 @@
 {
     "name": "vscode-coverage-highlighter",
     "displayName": "Code Coverage Highlighter",
-    "description": "Show your code quality",
+    "description": "Displays Your Code Coverage",
     "version": "1.0.1",
     "icon": "images/icon.png",
     "publisher": "brainfit",
@@ -17,7 +17,6 @@
         "url": "https://github.com/pilat/vscode-coverage-highlighter.git"
     },
     "categories": [
-        "Themes",
         "Linters",
         "Other"
     ],
