@@ -33,6 +33,7 @@ export interface IConfig {
     defaultState: boolean;
     redBgColor: string|undefined;
     greenBgColor: string|undefined;
+    showDiagnostic: boolean;
 }
 
 
@@ -103,12 +104,10 @@ export type ICoverageReport = ICoverage[];
 // export type ICoverageFragments = ICoverageFragmentBase[];
 
 export interface ICoverage {
-    // priority: number;  // parser's value
     file: string;
     stat?: ICoverageStat;
     fragments: ICoverageFragmentBase[];
     parserInfo: IParserInfo;
-    // withGreenBg?: boolean;
 }
 
 export interface ICoverageStat {
@@ -167,6 +166,7 @@ export interface ICoverageFragment { // TODO: See ICoverageFragmentBase
     isCollisionWith(fragment: ICoverageFragment): boolean;
     collection: ICoverageCollection;
     toString(): string;
+    addNoteFrom(fragment: ICoverageFragment): void;
 
     readonly start: ICoveragePosition;
     readonly end: ICoveragePosition;

@@ -1,6 +1,9 @@
 Changelog
 =========
 
+### 1.0.1
+-  Diagnostic messages are support
+
 ### 1.0.0
 -  First release was published.
 

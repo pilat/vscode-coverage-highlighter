@@ -43,7 +43,8 @@ export class ConfigServer extends App {
             files,
             defaultState,
             coveredColor,
-            unCoveredColor
+            unCoveredColor,
+            showDiagnostic
         } = workspace.getConfiguration(this.configId);
 
         this.config = {
@@ -52,9 +53,8 @@ export class ConfigServer extends App {
             isWholeLine: !!wholeLine,
             defaultState: defaultState === 'enable' || defaultState === 1 || defaultState === true,
             greenBgColor: undefined, // disabled
-            redBgColor: undefined // disabled
-            // greenBgColor:  ? coveredColor : undefined,
-            // redBgColor: unCoveredColor.indexOf('rgba') !== -1 || unCoveredColor.indexOf('#') === 0 ? unCoveredColor : undefined
+            redBgColor: undefined, // disabled
+            showDiagnostic: !!showDiagnostic
         };
         
         if (!this.isColorDisabled(coveredColor)) {

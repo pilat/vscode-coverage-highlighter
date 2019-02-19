@@ -1,8 +1,9 @@
 import { ICoverageFragmentBase, ICoverageCollection } from './../types';
 import { ICoveragePosition, CoverageColor, ICoverageFragment } from '../types';
+import { CoverageBaseFragment } from './coverageBaseFragment';
 
 
-export class CoverageFragment implements ICoverageFragment {
+export class CoverageFragment extends CoverageBaseFragment implements ICoverageFragment {
     /**
      * Fragment with lines and columns
      */
@@ -14,6 +15,7 @@ export class CoverageFragment implements ICoverageFragment {
     private _collection: ICoverageCollection|undefined;
 
     constructor(props: ICoverageFragmentBase) {
+        super();
         this._start = {
             line: props.start.line,
             column: props.start.column
@@ -92,6 +94,10 @@ export class CoverageFragment implements ICoverageFragment {
 
     public get note(): string|undefined {
         return this._note;
+    }
+
+    public set note(value: string|undefined) {
+        this._note = value;
     }
 
     public clone() {

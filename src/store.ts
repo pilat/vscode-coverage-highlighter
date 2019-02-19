@@ -13,7 +13,8 @@ export class AppStore implements IStore {
                 isWholeLine: true,
                 defaultState: true,
                 redBgColor: undefined,
-                greenBgColor: undefined
+                greenBgColor: undefined,
+                showDiagnostic: false
             },
             files: [],  // Coverage files
             coverage: {},  // Associative map with project files. source -> coverage ino

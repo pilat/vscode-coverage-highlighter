@@ -110,6 +110,15 @@ You also can disable one or more colors completely. Just pass empty string for c
 ```
 
 
+### Show diagnostic messages
+
+You also can enable following option to show diagnostic information on your `Problems` tab. Each uncovered range will be mentioned there.
+
+```json
+"vscode-coverage-highlighter.showDiagnostic": false
+```
+
+
 ## Commands
 
 Open the `Command Palette` and type `Code Coverage`

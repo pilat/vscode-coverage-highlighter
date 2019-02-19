@@ -97,13 +97,14 @@ export class IstanbulParser implements IParser {
 
             const branches = this.makeCollection<number[], IIstambul.IBranch>(entry.b, entry.branchMap,
                 (item) => item,
-                (item) => item.locations);
+                (map_) => map_.locations,
+                (map_) => map_.type);
             const statements = this.makeCollection<number, IIstambul.ILocation>(entry.s, entry.statementMap,
                 (item) => [item],
-                (item) => [item]);
+                (map_) => [map_]);
             const functions = this.makeCollection<number, IIstambul.IFunction>(entry.f, entry.fnMap,
                 (item) => [item],
-                (item) => item.skip ? [] : [item.loc]);
+                (map_) => map_.skip ? [] : [map_.loc]);
 
             const coverage = new CoverageCollection();
             coverage
@@ -152,12 +153,14 @@ export class IstanbulParser implements IParser {
         idsSource: IIstambul.IMap<A>,
         mapSource: IIstambul.IMap<T>,
         callbackIds: (e: A) => number[],
-        callbackMap: (e: T) => IIstambul.ILocation[]) {
+        callbackMap: (e: T) => IIstambul.ILocation[],
+        callbackMapNote?: (e: T) => string) {
             const collection = new CoverageCollection();
 
             for (const blockId of Object.keys(idsSource)) {
                 const blockCounts = callbackIds(idsSource[blockId])
                 const locations = callbackMap(mapSource[blockId]);
+                const note = callbackMapNote ? callbackMapNote(mapSource[blockId]) : undefined;
 
                 if (locations.length !== blockCounts.length) {
                     continue
@@ -166,6 +169,15 @@ export class IstanbulParser implements IParser {
                 zipWith(locations, blockCounts, (a, b) => {
                     if (a.start.line < 1 || a.end.line < 1) {
                         return;
+                    }
+                    if (a.start.column === 0 && a.end.column < 0) {
+                        // oops. Sometimes it happens. With branches.
+                        a.start.column = 0;
+                        a.end.column = 1;
+                    }
+
+                    if (a.start.column < 0 || a.end.column < 0) {
+                        return
                     }
                     if (a.skip) {
                         return
@@ -178,7 +190,8 @@ export class IstanbulParser implements IParser {
                         // make 0-based lines:
                         start: {line: a.start.line - 1, column: a.start.column},
                         end: {line: a.end.line - 1, column: a.end.column},
-                        color: b > 0 ? CoverageColor.GREEN : CoverageColor.RED
+                        color: b > 0 ? CoverageColor.GREEN : CoverageColor.RED,
+                        note: note
                     };
     
                     const fragment = new CoverageFragment(props);

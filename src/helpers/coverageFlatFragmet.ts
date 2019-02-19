@@ -1,8 +1,9 @@
+import { CoverageBaseFragment } from './coverageBaseFragment';
 import { ICoverageFragmentBase, ICoverageCollection, ICoveragePosition } from './../types';
 import { ICoverageFragment, CoverageColor } from '../types';
 
 
-export class CoverageFlatFragment implements ICoverageFragment {
+export class CoverageFlatFragment extends CoverageBaseFragment implements ICoverageFragment {
     /**
      * Fragment will be only with lines, without columnts
      */
@@ -16,6 +17,7 @@ export class CoverageFlatFragment implements ICoverageFragment {
     private _collection: ICoverageCollection|undefined;
 
     constructor(props: ICoverageFragmentBase) {
+        super();
         this.flatStart = props.start.line;
         this.flatEnd = props.end.line;
         this._color = props.color;
@@ -53,6 +55,10 @@ export class CoverageFlatFragment implements ICoverageFragment {
 
     public get note(): string|undefined {
         return this._note;
+    }
+
+    public set note(value: string|undefined) {
+        this._note = value;
     }
 
     public clone() {

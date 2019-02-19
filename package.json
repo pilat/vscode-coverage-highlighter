@@ -2,7 +2,7 @@
     "name": "vscode-coverage-highlighter",
     "displayName": "Code Coverage Highlighter",
     "description": "Show your code quality",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "icon": "images/icon.png",
     "publisher": "brainfit",
     "author": {
@@ -82,6 +82,12 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Make coverage lines wide",
+                    "scope": "resource"
+                },
+                "vscode-coverage-highlighter.showDiagnostic": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Also convert coverage information to diagnostic messages",
                     "scope": "resource"
                 },
                 "vscode-coverage-highlighter.coveredColor": {

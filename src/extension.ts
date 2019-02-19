@@ -1,3 +1,4 @@
+import { DiagnosticServer } from './diagnosticServer';
 import { AppAction, IExtensionApi } from './types';
 import { AppStore } from './store';
 import { CoverageParser } from './coverageParser';
@@ -29,6 +30,7 @@ export async function activate(context: ExtensionContext) {
         new StatusBarManager(statusBarItem),
         new CoverageManager(CoverageWatcher),
         new CoverageParser(),
+        new DiagnosticServer(),
         new ProviderManager(HighlightProvider)
     );
     Flux.dispatch({type: AppAction.APP_INIT});

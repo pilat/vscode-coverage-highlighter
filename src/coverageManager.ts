@@ -16,9 +16,9 @@ export class CoverageManager extends App {
     private watchers: Map<string, IWatcher> = new Map();
     private _workspace: TVSCodeWorkspace;
 
-    constructor(private watcher: TWatcher, workspace_override?: TVSCodeWorkspace) {
+    constructor(private watcher: TWatcher, workspaceOverride?: TVSCodeWorkspace) {
         super();
-        this._workspace = workspace_override || workspace;
+        this._workspace = workspaceOverride || workspace;
         this.getFolders();
         this._workspace.onDidChangeWorkspaceFolders(this.onChange, this, this.disposables);
     }

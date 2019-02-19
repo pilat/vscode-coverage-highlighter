@@ -140,9 +140,7 @@ export class CoverageCollection implements ICoverageCollection {
             // union fragments. Update new fragment and remove old fragment
             newFragment.flatStart = Math.min(newFragment.flatStart, oldFragment.flatStart)
             newFragment.flatEnd = Math.max(newFragment.flatEnd, oldFragment.flatEnd)
-            // if (newFragment.note || oldFragment.note) {
-            //     newFragment.note = `${newFragment.note || ''} ${oldFragment.note || ''}`.trim()
-            // }
+            newFragment.addNoteFrom(oldFragment);
             this._removeItem(oldFragment);
         } else if (oldFragment.color > newFragment.color) {
             // keep old fragment and use part of new fragment if nessesary
@@ -152,22 +150,25 @@ export class CoverageCollection implements ICoverageCollection {
                 newFragment.flatEnd = oldFragment.flatStart// - 1
             } else {
                 // Similar lines in line mode 
-                this._removeItem(newFragment)
+                this._removeItem(newFragment);
+                oldFragment.addNoteFrom(newFragment);
                 return
             }
             if (newFragment.length <= 0) {
+                oldFragment.addNoteFrom(newFragment);
                 this._removeItem(newFragment)
             }
         } else {
             // keep new fragment and use part of old fragment if nessesary
             this._removeItem(oldFragment);
-            
+            let notesWereKeep = false;
             if (oldFragment.flatStart < newFragment.flatStart) {
                 const newOne1 = oldFragment.clone();
                 newOne1.collection = this;
                 newOne1.flatEnd = newFragment.flatStart // - 1
                 if (newOne1.length > 0) {
-                    this._addItem(newOne1)
+                    this._addItem(newOne1);
+                    notesWereKeep = true;
                 }
             } 
             if (oldFragment.flatEnd > newFragment.flatEnd) {
@@ -175,8 +176,12 @@ export class CoverageCollection implements ICoverageCollection {
                 newOne2.collection = this;
                 newOne2.flatStart = newFragment.flatEnd // + 1
                 if (newOne2.length > 0) {
-                    this._addItem(newOne2)
+                    this._addItem(newOne2);
+                    notesWereKeep = true;
                 }
+            }
+            if (!notesWereKeep) {
+                newFragment.addNoteFrom(oldFragment);
             }
         }
     }
