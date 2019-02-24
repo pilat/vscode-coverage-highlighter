@@ -66,7 +66,7 @@ export class LcovParser implements IParser {
                 .normalize();
 
             let percent = 100;
-            if (coverage.stat.covered > 0) {
+            if (coverage.stat.total > 0) {
                 percent = Math.ceil(coverage.stat.covered * 100 / coverage.stat.total);
             }
 
