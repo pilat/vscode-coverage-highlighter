@@ -21,13 +21,27 @@
             "args": [
                 "--disable-extensions",
                 "--extensionDevelopmentPath=${workspaceRoot}",
-                "--extensionTestsPath=${workspaceRoot}/out/test" ],
+                "--extensionTestsPath=${workspaceRoot}/out/test/vscodeTests" ],
             "env": {
                 "DISABLE_COVERAGE": "true"
             },
             "stopOnEntry": false,
             "sourceMaps": true,
             "outFiles": [ "${workspaceRoot}/out/test/**/*.js" ],
+            "preLaunchTask": "npm: watch"
+        },
+        {
+            "name": "Run Unit Tests",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "${workspaceRoot}/out/test/unitTests/**/*.test.js"
+                // "--reporter",
+                // "min"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "openOnFirstSessionStart",
             "preLaunchTask": "npm: watch"
         }
     ]

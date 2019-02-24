@@ -1,17 +1,17 @@
-import { IMiddleware, IFluxAction } from './../src/flux/types';
-import { Flux } from '../src/flux/flux';
-import { IExtensionApi, ICoverageFile } from './../src/types';
-import { AppStore } from './../src/store';
+import { IMiddleware, IFluxAction } from '../../src/flux/types';
+import { Flux } from '../../src/flux/flux';
+import { IExtensionApi, ICoverageFile } from '../../src/types';
+import { AppStore } from '../../src/store';
 import * as vscode from 'vscode';
 import fs from 'fs';
 import * as os from 'os';
 import { join } from 'path';
-import { randomId } from '../src/helpers/utils';
+import { randomId } from '../../src/helpers/utils';
 import cloneDeep from 'lodash/cloneDeep';
 
 
-export const FILES_DIR = join(__dirname, '../../test/files');
-export const EXAMPLE_WORKSPACE = join(__dirname, '../../test/example');
+export const FILES_DIR = join(__dirname, '../../../test/files');
+export const EXAMPLE_WORKSPACE = join(__dirname, '../../../test/example');
 export const COVERAGE_FILE: ICoverageFile = { uri: join(FILES_DIR, 'lcov.info'), folder: FILES_DIR };
 
 

@@ -1,7 +1,7 @@
-import { Flux } from '../src/flux/flux';
-import { CoverageParser } from './../src/coverageParser';
-import { HighlightProvider } from './../src/highlightProvider';
-import { AppAction } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { CoverageParser } from '../../src/coverageParser';
+import { HighlightProvider } from '../../src/highlightProvider';
+import { AppAction } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, getTestStore, openFile, COVERAGE_FILE, closeAllEditors } from './common';

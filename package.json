@@ -116,9 +116,16 @@
         "compile": "tsc -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "watch": "tsc -watch -p ./",
-        "test": "node ./node_modules/vscode/bin/test",
         "lint": "tslint './src/**/*.ts' './test/*.ts'",
-        "pretty": "tslint --fix './src/**/*.ts' './test/*.ts'"
+        "pretty": "tslint --fix './src/**/*.ts' './test/*.ts'",
+
+        "test": "npm run compile && npm run test_make_empty_coverage && npm run test_do_remap && npm run test_apply_instrument && npm run test_run_all && npm run test_do_remap && npm run test_make_reports && npm run test_fix_reports",
+        "test_run_all": "node ./out/test/test_all.js",
+        "test_apply_instrument": "cd out/src && nyc instrument . . && cd ../../",
+        "test_make_empty_coverage": "cd out/src && nyc --all --clean --reporter=none --include out/src echo && cd ../..",
+        "test_do_remap": "cd out/src && run-for-every-file --src \"../../.nyc_output/*.json\" --run \"remap-istanbul -i {{src-file}} -o {{src-file}}\" && cd ../..",
+        "test_make_reports": "cd out/src && nyc report -r html -r json -r text -r lcov && cd ../..",
+        "test_fix_reports": "sed -i -e \"s|SF:../../|SF:|g\" coverage/lcov.info && sed -i -e \"s|../../||g\" coverage/coverage-final.json"
     },
     "devDependencies": {
         "@types/crypto-js": "^3.1.43",
@@ -132,7 +139,9 @@
         "glob": "^7.1.1",
         "istanbul": "^0.4.5",
         "mocha": "^6.0.0",
+        "nyc": "^13.3.0",
         "remap-istanbul": "^0.13.0",
+        "run-for-every-file": "^1.1.0",
         "simple-mock": "^0.8.0",
         "tslint": "^5.12.1",
         "tslint-microsoft-contrib": "^6.0.0",

@@ -1,8 +1,8 @@
-import { Flux } from '../src/flux/flux';
-import { AppAction, ICoverageFile } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction, ICoverageFile } from '../../src/types';
 import * as assert from 'assert';
 import { sleep, getTestStore, COVERAGE_FILE, StoreKeepeer } from './common';
-import { CoverageParser } from '../src/coverageParser';
+import { CoverageParser } from '../../src/coverageParser';
 
 
 suite('CoverageParser Tests', () => {

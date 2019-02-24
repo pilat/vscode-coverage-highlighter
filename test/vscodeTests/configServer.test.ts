@@ -1,10 +1,10 @@
-import { Flux } from '../src/flux/flux';
-import { AppAction } from '../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { ConfigServer } from '../src/configServer';
+import { ConfigServer } from '../../src/configServer';
 import { sleep, getTestStore, StoreKeepeer } from './common';
-import { randomId } from '../src/helpers/utils';
+import { randomId } from '../../src/helpers/utils';
 
 
 suite('Config Tests', () => {

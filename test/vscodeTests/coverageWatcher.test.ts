@@ -1,12 +1,12 @@
-import { Flux } from '../src/flux/flux';
-import { AppAction } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, getTestStore, FILES_DIR, EXAMPLE_WORKSPACE, StoreKeepeer } from './common';
 import { join } from 'path';
 import fs from 'fs';
 import {mock, restore} from 'simple-mock';
-import { CoverageWatcher } from '../src/coverageWatcher';
+import { CoverageWatcher } from '../../src/coverageWatcher';
 import { FileSystemWatcherStub } from './stubs/fsWatcher.stub';
 
 

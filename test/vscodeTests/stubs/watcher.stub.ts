@@ -1,4 +1,4 @@
-import { IWatcher } from './../../src/types';
+import { IWatcher } from './../../../src/types';
 import * as vscode from 'vscode';
 
 

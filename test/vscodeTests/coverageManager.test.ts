@@ -1,8 +1,8 @@
-import { Flux } from '../src/flux/flux';
-import { AppAction } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction } from '../../src/types';
 import * as assert from 'assert';
 import { sleep } from './common';
-import { CoverageManager } from '../src/coverageManager';
+import { CoverageManager } from '../../src/coverageManager';
 import { WorkspaceStub } from './stubs/workspace.stub';
 import { WatcherStub } from './stubs/watcher.stub';
 

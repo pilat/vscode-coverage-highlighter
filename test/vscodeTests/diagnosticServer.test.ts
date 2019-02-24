@@ -1,11 +1,11 @@
 
-import { Flux } from '../src/flux/flux';
-import { AppAction, ICoverage, CoverageColor } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction, ICoverage, CoverageColor } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, getTestStore } from './common';
 import {mock, restore, Spy} from 'simple-mock';
-import { DiagnosticServer } from '../src/diagnosticServer';
+import { DiagnosticServer } from '../../src/diagnosticServer';
 import { LanguagesStub } from './stubs/diagnosticCollection.stub';
 
 

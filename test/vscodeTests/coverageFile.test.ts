@@ -1,9 +1,9 @@
-import { ICoverageFile } from './../src/types';
+import { ICoverageFile } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import fs from 'fs';
 import { join } from 'path';
-import { CoverageFile } from '../src/coverageFile';
+import { CoverageFile } from '../../src/coverageFile';
 import { sleep, FILES_DIR } from './common';
 import {mock, restore} from 'simple-mock';
 

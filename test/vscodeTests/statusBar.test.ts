@@ -1,9 +1,9 @@
-import { Flux } from '../src/flux/flux';
-import { AppAction, ICoverageFile, ICoverageStat } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { AppAction, ICoverageFile, ICoverageStat } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, getTestStore } from './common';
-import { StatusBarManager } from '../src/statusBarManager';
+import { StatusBarManager } from '../../src/statusBarManager';
 import { StatusBarItemStub } from './stubs/statusBar.stub';
 
 

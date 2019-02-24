@@ -1,6 +1,6 @@
-import { Flux } from '../src/flux/flux';
-import { ProviderManager } from './../src/providerManager';
-import { AppAction, IProvider } from './../src/types';
+import { Flux } from '../../src/flux/flux';
+import { ProviderManager } from '../../src/providerManager';
+import { AppAction, IProvider } from '../../src/types';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { sleep, closeAllEditors, newFile, openFile } from './common';
