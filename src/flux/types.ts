@@ -14,6 +14,6 @@ export interface IStore {
 }
 
 export interface IMiddleware {
-    preDispatch?(action: IFluxAction, state: object): void;
-    postDispatch?(action: IFluxAction, state: object): void;
+    preDispatch(action: IFluxAction, state: object): void;
+    postDispatch(action: IFluxAction, state: object): void;
 }

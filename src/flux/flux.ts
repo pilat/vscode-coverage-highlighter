@@ -33,46 +33,44 @@ export class FluxFramework extends EventEmitter {
     }
 
     // @ts-ignore: Override EventEmitter
-    public on(eventType: string, listener: (...args: any[]) => void, thisArgs: any, disposables: Disposable[]): this {
-        const bindableListener = listener.bind(thisArgs);
-        disposables.push({
-            dispose: () => {
-                this.removeListener(eventType, bindableListener);
-            }
-        });
+    public on(eventType: string, listener: (...args: any[]) => void, thisArg?: any, disposables?: Disposable[]): this {
+        const bindableListener = thisArg ? listener.bind(thisArg) : listener;
+        if (disposables) {
+            disposables.push({
+                dispose: () => {
+                    this.removeListener(eventType, bindableListener);
+                }
+            });
+        }
         return this.addListener(eventType, bindableListener);
     }
 
+    // @ts-ignore Override EventEmitter
+    public off(eventType: string, listener: (...args: any[]) => void): this {
+        return this.removeListener(eventType, listener);
+    }
+
     public get state(): object {
-        return this._state || this.store.initialState();
+        if (this._state === undefined) {
+            this._state = this.store.initialState();
+        }
+        return this._state;
     }
 
     public dispatch(action: IFluxAction) {
-        if (!action) {
-            throw new Error('Empty action');
-        }
-
         const {type, ...data} = action;
-        if (!action.type) {
-            throw new Error('Invalid action type');
-        }
-
+        
         for (const m of this.middlewares) {
-            if (m.preDispatch) {
-                m.preDispatch(action, this.state);
-            }
+            m.preDispatch(action, this.state);
         }
 
         this._state = this.store.onAction(type, data, this.state);
 
         for (const m of this.middlewares) {
-            if (m.postDispatch) {
-                m.postDispatch(action, this.state);
-            }
+            m.postDispatch(action, this.state);
         }
 
         this.emit(type, action);
-        // return Promise.resolve(clonedAction);
     }
 
     public getState(path: string | string[] = '', defaultValue?: any): any {
