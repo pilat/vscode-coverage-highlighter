@@ -5,7 +5,7 @@ import { CoverageFragment } from '../helpers/coverageFragment';
 import { CoverageCollection } from '../helpers/coverageCollection';
 import { CoverageFlatFragment } from '../helpers/coverageFlatFragmet';
 
-namespace IIstambul {
+namespace IIstanbul {
     /**
      * See https://github.com/gotwarlost/istanbul/blob/master/coverage.json.md
      */
@@ -45,12 +45,12 @@ namespace IIstambul {
     }
     
     export interface ILocation {
-        start: IIstambulPosition;
-        end: IIstambulPosition;
+        start: IIstanbulPosition;
+        end: IIstanbulPosition;
         skip?: boolean
     }
     
-    export interface IIstambulPosition {
+    export interface IIstanbulPosition {
         line: number;
         column: number
     }
@@ -77,7 +77,7 @@ export class IstanbulParser implements IParser {
 
     public async getReport(): Promise<ICoverageReport> {
         // https://github.com/gotwarlost/istanbul/blob/master/coverage.json.md
-        const content: IIstambul.Report = JSON.parse(this.content);
+        const content: IIstanbul.Report = JSON.parse(this.content);
         const all: ICoverage[] = [];
         
         for (const coverage of this.parse(content)) {
@@ -87,7 +87,7 @@ export class IstanbulParser implements IParser {
         return all;
     }
 
-    private *parse(content: IIstambul.Report): IterableIterator<ICoverage> {
+    private *parse(content: IIstanbul.Report): IterableIterator<ICoverage> {
         for (let entry of Object.values(content)) {
             // entry = {path: '', b: [], branchMap: {}, s: [], statementMap: {}, f: [], fnMap: {}, ...entry}
             let filePath: string = entry.path;
@@ -95,14 +95,14 @@ export class IstanbulParser implements IParser {
                 filePath = path.join(this.folder, filePath);
             }
 
-            const branches = this.makeCollection<number[], IIstambul.IBranch>(entry.b, entry.branchMap,
+            const branches = this.makeCollection<number[], IIstanbul.IBranch>(entry.b, entry.branchMap,
                 (item) => item,
                 (map_) => map_.locations,
                 (map_) => map_.type);
-            const statements = this.makeCollection<number, IIstambul.ILocation>(entry.s, entry.statementMap,
+            const statements = this.makeCollection<number, IIstanbul.ILocation>(entry.s, entry.statementMap,
                 (item) => [item],
                 (map_) => [map_]);
-            const functions = this.makeCollection<number, IIstambul.IFunction>(entry.f, entry.fnMap,
+            const functions = this.makeCollection<number, IIstanbul.IFunction>(entry.f, entry.fnMap,
                 (item) => [item],
                 (map_) => map_.skip ? [] : [map_.loc]);
 
@@ -150,10 +150,10 @@ export class IstanbulParser implements IParser {
     }
 
     private makeCollection<A, T>(
-        idsSource: IIstambul.IMap<A>,
-        mapSource: IIstambul.IMap<T>,
+        idsSource: IIstanbul.IMap<A>,
+        mapSource: IIstanbul.IMap<T>,
         callbackIds: (e: A) => number[],
-        callbackMap: (e: T) => IIstambul.ILocation[],
+        callbackMap: (e: T) => IIstanbul.ILocation[],
         callbackMapNote?: (e: T) => string) {
             const collection = new CoverageCollection();
 
