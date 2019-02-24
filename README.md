@@ -27,7 +27,7 @@ This extension supports several code coverage formats. Depending on the format o
 | Format | Search pattern | Fragments highlighting |
 | -- | -- | :--: |
 | **LCOV** | `coverage/lcov*.info` | **No** |
-| **Istambul** | `coverage/coverage-final.json` | **Yes** |
+| **Istanbul** | `coverage/coverage-final.json` | **Yes** |
 | **Cobertura** | `cov*.xml` | **No** |
 
 
@@ -38,7 +38,7 @@ Appearance depends on your code coverage format and configuration.
 
 ### Code with highlighted fragments
 
-Istambul file is providing fragment highlighting:
+Istanbul file is providing fragment highlighting:
 
 <img src="https://github.com/pilat/vscode-coverage-highlighter/blob/master/images/code1.png?raw=true" alt="Code fragments example" width="449">
 
