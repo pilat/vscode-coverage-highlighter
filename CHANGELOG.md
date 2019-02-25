@@ -1,6 +1,11 @@
 Changelog
 =========
 
+### 1.0.2
+-  Fix lcov issue
+-  Fix istanbul issue
+-  Fix tests
+
 ### 1.0.1
 -  Diagnostic messages are support
 
@@ -11,7 +16,6 @@ Changelog
 
 TODO
 =========
-- Tests for fragment utils
 - Tests for existing parsers
 - Add more parsers
 - Diagnostic/crash log

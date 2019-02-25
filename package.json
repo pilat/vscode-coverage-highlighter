@@ -2,7 +2,7 @@
     "name": "vscode-coverage-highlighter",
     "displayName": "Code Coverage Highlighter",
     "description": "Displays Your Code Coverage",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "icon": "images/icon.png",
     "publisher": "brainfit",
     "author": {
