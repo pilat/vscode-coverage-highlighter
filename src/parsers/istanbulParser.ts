@@ -10,11 +10,6 @@ namespace IIstanbul {
      * See https://github.com/gotwarlost/istanbul/blob/master/coverage.json.md
      */
     export type Report = IMap<IFile>;
-    // export type TStatements = IMap<number>;
-    // export type TBranches = IMap<number[]>;
-    // export type TFunctions = IMap<number>;
-    // export type THash = number|number[];
-    // export type TMap = IBranch|IFunction|ILocation;
 
     export interface IFile {
         path: string;
@@ -60,7 +55,7 @@ namespace IIstanbul {
 export class IstanbulParser implements IParser {
     public getInfo(): IParserInfo {
         return {
-            name: 'istambul',
+            name: 'istanbul',
             priority: 20,
             hasAdditionalColor: true
         }
@@ -89,12 +84,12 @@ export class IstanbulParser implements IParser {
 
     private *parse(content: IIstanbul.Report): IterableIterator<ICoverage> {
         for (let entry of Object.values(content)) {
-            // entry = {path: '', b: [], branchMap: {}, s: [], statementMap: {}, f: [], fnMap: {}, ...entry}
             let filePath: string = entry.path;
             if (!path.isAbsolute(filePath)) {
                 filePath = path.join(this.folder, filePath);
             }
 
+            // Refactor it: just "else not taken" mark
             const branches = this.makeCollection<number[], IIstanbul.IBranch>(entry.b, entry.branchMap,
                 (item) => item,
                 (map_) => map_.locations,
@@ -108,7 +103,7 @@ export class IstanbulParser implements IParser {
 
             const coverage = new CoverageCollection();
             coverage
-                .merge(branches)
+                // .merge(branches)
                 .merge(statements)
                 .merge(functions)
                 .normalize();
@@ -123,23 +118,27 @@ export class IstanbulParser implements IParser {
             bgCollection.normalize();
             coverage.merge(bgCollection);
 
+            const statementsPercent = statements.stat.total > 0 ? Math.ceil(statements.stat.covered * 100 / statements.stat.total) : 0;
+            const branchesPercent = branches.stat.total > 0 ? Math.ceil(branches.stat.covered * 100 / branches.stat.total) : 0;
+            const functionsPercent = functions.stat.total > 0 ? Math.ceil(functions.stat.covered * 100 / functions.stat.total) : 0;
+
             const tooltips = [
-                `Statements: ${Math.ceil(statements.stat.covered * 100 / statements.stat.total)}% (${statements.stat.covered}/${statements.stat.total})`,
-                `Branches: ${Math.ceil(branches.stat.covered * 100 / branches.stat.total)}% (${branches.stat.covered}/${branches.stat.total})`,
-                `Functions: ${Math.ceil(functions.stat.covered * 100 / functions.stat.total)}% (${functions.stat.covered}/${functions.stat.total})`
+                `Statements: ${statementsPercent}% (${statements.stat.covered}/${statements.stat.total})`,
+                `Branches: ${branchesPercent}% (${branches.stat.covered}/${branches.stat.total})`,
+                `Functions: ${functionsPercent}% (${functions.stat.covered}/${functions.stat.total})`
             ];
 
-            let percent = 100;
+            let totalPercent = 0;
             const covered = branches.stat.covered + statements.stat.covered + functions.stat.covered;
             const total = branches.stat.total + statements.stat.total + functions.stat.total;
             if (total > 0) {
-                percent = Math.ceil(covered * 100 / total);
+                totalPercent = Math.ceil(covered * 100 / total);
             }
 
             const ret: ICoverage = {
                 file: filePath,
                 stat: {
-                    label: `${percent}%`,
+                    label: `${totalPercent}%`,
                     tooltip: tooltips.join('\n')
                 },
                 fragments: coverage.dump(),
@@ -182,8 +181,8 @@ export class IstanbulParser implements IParser {
                     if (a.skip) {
                         return
                     }
-                    // Sometimes start and end could contain warning values
-                    if (a.start.line === a.end.line && a.start.column > a.end.column) {
+                    // Sometimes start and end are swapped
+                    if (a.start.line > a.end.line || (a.start.line === a.end.line && a.start.column > a.end.column)) {
                         [a.start, a.end] = [a.end, a.start];
                     }
                     const props: ICoverageFragmentBase = {
