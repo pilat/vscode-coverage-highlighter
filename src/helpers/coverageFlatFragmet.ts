@@ -5,7 +5,7 @@ import { ICoverageFragment, CoverageColor } from '../types';
 
 export class CoverageFlatFragment extends CoverageBaseFragment implements ICoverageFragment {
     /**
-     * Fragment will be only with lines, without columnts
+     * Fragment only with lines. Without columns
      */
 
     private _color: CoverageColor;

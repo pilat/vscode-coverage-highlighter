@@ -147,7 +147,6 @@ export interface ICoverageCollection {  // TODO: see also ICoverage
     addItem(fragment: ICoverageFragment): void;
     removeItem(fragment: ICoverageFragment): void;
     merge(collection: ICoverageCollection): ICoverageCollection;
-    // dump(): ICoverageFragments;
     readonly items: Set<ICoverageFragment>;
     dump(): ICoverageFragmentBase[];
     normalize(): void;

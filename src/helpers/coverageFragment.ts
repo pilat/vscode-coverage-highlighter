@@ -32,33 +32,30 @@ export class CoverageFragment extends CoverageBaseFragment implements ICoverageF
     }
 
     public get flatStart(): number {
-        this._verifyMaxColumns()
-        return this._start.line * this._collection.maxColumns + this._start.column;
+        return this._start.line * this._getMaxColumns() + this._start.column;
     }
 
     public get flatEnd(): number {
-        this._verifyMaxColumns()
-        return this._end.line * this._collection.maxColumns + this._end.column
+        return this._end.line * this._getMaxColumns() + this._end.column
     }
 
     public set flatStart(value: number) {
-        this._verifyMaxColumns()
-        const coef = this._collection.maxColumns;
+        const coef = this._getMaxColumns();
         this._start.line = Math.floor(value / coef);
         this._start.column = value % coef
     }
 
     public set flatEnd(value: number) {
-        this._verifyMaxColumns()
-        const coef = this._collection.maxColumns || 1;
+        const coef = this._getMaxColumns() || 1;
         this._end.line = Math.floor(value / coef);
         this._end.column = value % coef
     }
 
-    private _verifyMaxColumns() {
+    private _getMaxColumns(): number {
         if (!this.collection || this._collection.maxColumns < 1) {
             throw new Error('Collection is not defined yet')
         }
+        return this._collection.maxColumns + 1;
     }
 
     public get length(): number {
@@ -104,9 +101,9 @@ export class CoverageFragment extends CoverageBaseFragment implements ICoverageF
         return new CoverageFragment(this.dump()); // "deep" copy
     }
 
-    public isCollisionWith(fragment: CoverageFragment) {
-        const isCollision = (fragment.flatStart >= this.flatStart && fragment.flatStart < this.flatEnd) || 
-            (fragment.flatEnd > this.flatStart && fragment.flatEnd <= this.flatEnd);
+    public isCollisionWith(fragment: ICoverageFragment) {
+        const isCollision = (fragment.flatStart >= this.flatStart && fragment.flatStart <= this.flatEnd) || 
+            (fragment.flatEnd >= this.flatStart && fragment.flatEnd <= this.flatEnd);
         
         return isCollision;
     }
@@ -116,9 +113,6 @@ export class CoverageFragment extends CoverageBaseFragment implements ICoverageF
     }
 
     public get collection(): ICoverageCollection {
-        if (this._collection === undefined) {
-            throw new Error('Collection is not set')
-        }
         return this._collection;
     }
 

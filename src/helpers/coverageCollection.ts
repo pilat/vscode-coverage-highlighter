@@ -92,9 +92,11 @@ export class CoverageCollection implements ICoverageCollection {
 
     private _addItem(fragment: ICoverageFragment): void {
         this._stat = undefined;
-        const newItem = fragment.clone()
-        newItem.collection = this;
-        this._items.add(newItem);
+        if (fragment.collection !== undefined && fragment.collection !== this) {
+            throw new Error('This item has already in collection')
+        }
+        fragment.collection = this;
+        this._items.add(fragment);
     }
 
     private _removeItem(fragment: ICoverageFragment) {
@@ -145,9 +147,9 @@ export class CoverageCollection implements ICoverageCollection {
         } else if (oldFragment.color > newFragment.color) {
             // keep old fragment and use part of new fragment if nessesary
             if (newFragment.flatStart > oldFragment.flatStart) {
-                newFragment.flatStart = oldFragment.flatEnd// + 1
+                newFragment.flatStart = oldFragment.flatEnd + 1
             } else if (newFragment.flatEnd > oldFragment.flatStart) {
-                newFragment.flatEnd = oldFragment.flatStart// - 1
+                newFragment.flatEnd = oldFragment.flatStart - 1
             } else {
                 // Similar lines in line mode 
                 this._removeItem(newFragment);
@@ -165,7 +167,7 @@ export class CoverageCollection implements ICoverageCollection {
             if (oldFragment.flatStart < newFragment.flatStart) {
                 const newOne1 = oldFragment.clone();
                 newOne1.collection = this;
-                newOne1.flatEnd = newFragment.flatStart // - 1
+                newOne1.flatEnd = newFragment.flatStart - 1
                 if (newOne1.length > 0) {
                     this._addItem(newOne1);
                     notesWereKeep = true;
@@ -174,7 +176,7 @@ export class CoverageCollection implements ICoverageCollection {
             if (oldFragment.flatEnd > newFragment.flatEnd) {
                 const newOne2 = oldFragment.clone();
                 newOne2.collection = this;
-                newOne2.flatStart = newFragment.flatEnd // + 1
+                newOne2.flatStart = newFragment.flatEnd + 1
                 if (newOne2.length > 0) {
                     this._addItem(newOne2);
                     notesWereKeep = true;
