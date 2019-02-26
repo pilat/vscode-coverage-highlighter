@@ -1,6 +1,9 @@
 Changelog
 =========
 
+### 1.0.3
+-  Quickfix for istanbul parser
+
 ### 1.0.2
 -  Fix lcov issue
 -  Fix istanbul issue

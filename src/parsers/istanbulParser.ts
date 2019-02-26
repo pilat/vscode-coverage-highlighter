@@ -92,7 +92,14 @@ export class IstanbulParser implements IParser {
             // Refactor it: just "else not taken" mark
             const branches = this.makeCollection<number[], IIstanbul.IBranch>(entry.b, entry.branchMap,
                 (item) => item,
-                (map_) => map_.locations,
+                (map_) => {
+                    if (map_.type === 'if') {
+                        // 'if' is a special case. TODO: Insert marker instead coverage region
+                        return [];  // ignore them
+                    } else {
+                        return map_.locations
+                    }
+                },
                 (map_) => map_.type);
             const statements = this.makeCollection<number, IIstanbul.ILocation>(entry.s, entry.statementMap,
                 (item) => [item],
@@ -103,7 +110,7 @@ export class IstanbulParser implements IParser {
 
             const coverage = new CoverageCollection();
             coverage
-                // .merge(branches)
+                .merge(branches)
                 .merge(statements)
                 .merge(functions)
                 .normalize();
@@ -173,6 +180,10 @@ export class IstanbulParser implements IParser {
                         // oops. Sometimes it happens. With branches.
                         a.start.column = 0;
                         a.end.column = 1;
+                    }
+                    if (a.start.line && a.start.column && a.end.line && !a.end.column) {
+                        // whole line in branches
+                        a.end.column = 10000; // TODO: Fix it
                     }
 
                     if (a.start.column < 0 || a.end.column < 0) {
