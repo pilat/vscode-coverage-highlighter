@@ -139,7 +139,7 @@
         "glob": "^7.1.1",
         "istanbul": "^0.4.5",
         "mocha": "^6.0.0",
-        "nyc": "^13.3.0",
+        "nyc": "^14.1.0",
         "remap-istanbul": "^0.13.0",
         "run-for-every-file": "^1.1.0",
         "simple-mock": "^0.8.0",
