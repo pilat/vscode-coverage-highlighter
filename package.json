@@ -152,7 +152,7 @@
     "dependencies": {
         "cobertura-parse": "vokal/cobertura-parse#53109a677c995f5d2e90acd0fcd0b0788a6ec061",
         "debounce": "^1.2.0",
-        "events": "^3.0.0",
+        "events": "3.0.0",
         "lcov-parse": "^1.0.0",
         "lodash": "^4.17.11",
         "vscode-extension-telemetry": "^0.1.1"
