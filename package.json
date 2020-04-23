@@ -147,7 +147,7 @@
         "tslint-microsoft-contrib": "^6.0.0",
         "typescript": "^3.3.1",
         "typescript-tslint-plugin": "^0.3.1",
-        "vscode": "^1.1.16"
+        "vscode": "^1.1.37"
     },
     "dependencies": {
         "cobertura-parse": "vokal/cobertura-parse#53109a677c995f5d2e90acd0fcd0b0788a6ec061",
