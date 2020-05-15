@@ -128,7 +128,7 @@
         "test_fix_reports": "sed -i -e \"s|SF:../../|SF:|g\" coverage/lcov.info && sed -i -e \"s|../../||g\" coverage/coverage-final.json"
     },
     "devDependencies": {
-        "@types/crypto-js": "^3.1.43",
+        "@types/crypto-js": "^3.1.46",
         "@types/debounce": "^1.2.0",
         "@types/glob": "^7.1.1",
         "@types/lodash": "^4.14.120",
