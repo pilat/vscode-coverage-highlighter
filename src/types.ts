@@ -1,4 +1,3 @@
-import { ICoverageFragment } from './types';
 import { TextEditor, WorkspaceFolder } from 'vscode';
 
 

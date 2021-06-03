@@ -33,7 +33,7 @@ export class ProviderManager extends App {
     private onChangeEditors(editors: TextEditor[]) {
         // Add new
         for (const editor of editors) {
-            const id = (editor as any).id;
+            const id = editor.document.uri.toString();
             if (!this.attached.has(id)) {
                 const provider = new this.provider(editor);
                 this.attached.set(id, provider);
@@ -42,7 +42,7 @@ export class ProviderManager extends App {
         }
 
         // Remove not mentioned
-        const mentionedIds: string[] = editors.map(o => (o as any).id);
+        const mentionedIds: string[] = editors.map(o => o.document.uri.toString());
         for (const [id, provider] of Array.from(this.attached)) {
             if (mentionedIds.indexOf(id) === -1) {
                 provider.dispose();
