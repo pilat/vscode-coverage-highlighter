@@ -52,8 +52,9 @@ export class ProviderManager extends App {
     }
 
     private onChangeActive(editor: TextEditor) {
+        const uri = editor.document.uri.toString();
         for (const [id, provider] of Array.from(this.attached)) {
-            if (id === (editor as any).id) {
+            if (id === uri) {
                 provider.activate();
             }
         }
